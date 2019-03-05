@@ -1,9 +1,11 @@
 <template>
   <div class="login">
-    <img src="../assets/logo.png" />
+    <img src="../assets/logo.png">
     <h3>Sign In</h3>
-    <input type="text" v-model="email" placeholder="Email" /><br />
-    <input type="password" v-model="password" placeholder="Password" /><br />
+    <input type="text" v-model="email" placeholder="Email">
+    <br>
+    <input type="password" v-model="password" placeholder="Password">
+    <br>
     <button @click="login">Sign In</button>
     <button @click="loginAsGuest">Sign In As Guest</button>
   </div>
