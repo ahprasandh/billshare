@@ -7,7 +7,7 @@
 
 <script>
 import { mapState } from "vuex";
-import fb from "../firebaseConfig";
+import fb from "@/firebaseConfig";
 export default {
   name: "PersonEditor",
   computed: {
@@ -25,15 +25,18 @@ export default {
         var person = {
           createdOn: new Date(),
           name: this.name,
-          photo: this.photo,
-          id: 123
+          photo: this.photo
         };
-        this.$parent.personCollection.push(person);
-        // fb.personCollection.add(person).then(ref => {
-        //   this.$parent.init();
-        // }).catch(err => {
-        //   console.log(err)
-        // });
+        fb.personCollection
+          .add(person)
+          .then(ref => {
+            person.id = ref.id;
+            // this.$parent.personCollection.push(person);
+            this.$parent.init();
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     }
   }

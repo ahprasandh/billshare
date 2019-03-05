@@ -40,15 +40,15 @@ export default {
         .auth()
         .signInWithEmailAndPassword("guest@domain.com", "guest@123")
         .then(
-          user => {
+          () => {
             this.$router.replace("home");
           },
-          err => {
+          () => {
             firebase
               .auth()
               .createUserWithEmailAndPassword("guest@domain.com", "guest@123")
               .then(
-                user => {
+                () => {
                   this.$router.replace("home");
                 },
                 err => {

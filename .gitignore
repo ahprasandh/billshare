@@ -1,6 +1,6 @@
 .DS_Store
 node_modules
-/dist
+docs/js/chunk-vendors.js
 src/constants.js
 
 # local env files

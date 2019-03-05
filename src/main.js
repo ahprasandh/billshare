@@ -5,7 +5,7 @@ import store from "./store";
 import fb from "./firebaseConfig";
 Vue.config.productionTip = false;
 let app = "";
-fb.auth.onAuthStateChanged(user => {
+fb.auth.onAuthStateChanged(() => {
   if (!app) {
     /* eslint-disable no-new */
     app = new Vue({
