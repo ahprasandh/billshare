@@ -167,6 +167,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=date]::-webkit-inner-s
   padding: 5px 5px;
   margin: 5px 0;
   text-align: center;
+  font-size: 25px;
 }
 
 input {
@@ -188,13 +189,23 @@ input:disabled {
 
 .err {
   position: absolute;
-  top: 35%;
-  left: 39%;
-  background: #EF5350;
-  color: #fff;
-  width: 100px;
-  padding: 10px;
-  border-radius: 4px;
-  box-shadow: 1px 1px 9px 5px rgba(223, 141, 141, 0.34);
+  top: 45%;
+  width: calc(100% - 20px);
   text-align: center;
+  z-index: 2;
+  
+}
+
+.err div{
+  color: #fff;
+  idth: 400px;
+    height: auto;
+    margin: 0 auto;
+    padding: 10px;
+    position: relative;
+  background: #EF5350;
+  font-size: 25px;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 1px 1px 9px 5px rgba(223, 141, 141, 0.34);
 }
