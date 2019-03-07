@@ -7,67 +7,66 @@
       <div class="eWHead" @click="expandExpense(expense)" v-bind:class="{ edit: mode !=='view', expanded: expand }">
         <div class="eWHeadLeft">
           <input @click.stop="noAct" v-if="mode !== 'view'" type="text" v-model="name" placeholder="Enter Name" />
-          <span :id="'expenseName_' + expense.id" v-else v-text="expense.name" />
+          <span :id="'expenseName_' + expense.id" v-else v-text="this.name" />
+          <i v-if="mode==='view'" @click="editClick($event)" class="bs-edit"></i>
+          <i v-if="mode==='view'" @click.stop="mode='edit';expand=true" class="bs-delete"></i>
           <div v-if="checkTemp" class="neHt">
-            <span>Not Saved</span>
+            <span class="bs-save"> Not Saved</span>
           </div>
         </div>
         <div class="eWHeadRight" v-bind:class="{ expanded: expand }">
-          <span v-if="mode==='view'" @click.stop="mode='edit';expand=true">Edit</span>
           <input @click.stop="noAct" v-if="mode !== 'view'" type="date" v-model="date" placeholder="Enter Date" />
-          <span v-else-if="expense.date" v-text="expense.date" />
-          <span v-if="!expand" class="currency">₹</span>
+          <span v-else-if="this.date" v-text="this.date" />
+          <span v-if="!expand || mode!=='view'" class="currency" v-text="settings.currency"></span>
           <input @click.stop="noAct" v-if="mode !== 'view' && expand" type="number" v-model.number="cost" placeholder="Enter Amount" />
-          <span v-else-if="!expand" v-text="expense.cost" />
+          <span v-else-if="!expand" v-text="this.cost" />
         </div>
       </div>
       <div class="exPc" v-if="mode !== 'view'" v-bind:class="{ expanded: expand }">
-        <div class="exPcTab">
+        <div v-if="settings && settings.show.help">
+          <div class="neHt">
+            <span class="bs-help">Add Persons to Billed Persons from Available Persons to split the bill amount</span>
+          </div>
+          <div class="neHt">
+            <span class="bs-help"> To auto calculate bill set '0' as cost</span>
+          </div>
+        </div>
+        <div class="exPcTitle">
           <div class="exPcL">
             <div class="exPcT">Available Persons</div>
-            <div class="neHt">
-              <span>? To autocalculate bill set '0' as cost</span>
-            </div>
+          </div>
+          <div class="exPcR">
+            <div class="exPcT">Billed Persons</div>
+          </div>
+        </div>
+        <div class="exPcTab">
+          <div class="exPcL">
             <div class="exPcP" v-for="person in availablePersons" :key="person.id">
               <div class="pCont">
                 <img class="pPic" src="../assets/guest.svg" />
               </div>
               <div class="pName" v-text="person.name"></div>
-              <span class="currency">₹</span>
+              <span class="currency" v-text="settings.currency"></span>
               <input type="number" v-model.number="person.cost" />
               <div class="but" @click="addPerson(person)">+</div>
             </div>
           </div>
           <div class="exPcR">
-            <div class="exPcT">Billed Persons</div>
+  
             <div class="exPcP" v-for="(person, i) in selectedPersons" :key="person.id">
               <div class="pCont">
                 <img class="pPic" src="../assets/guest.svg" />
               </div>
               <div class="pName" v-text="person.name"></div>
-              <span class="currency">₹</span>
+              <span class="currency" v-text="settings.currency"></span>
               <input type="number" v-model.number="person.cost" disabled="disabled" />
               <div class="but" @click="removePerson(person, i)">-</div>
             </div>
           </div>
         </div>
-        <div class="exTot" :id="'expenseTot_' + expense.id" v-if="mode === 'view'">
-          <div>Total</div>
-          <div>
-            <span class="currency">₹</span>
-            <input type="number" v-model.number="cost" placeholder="Enter Amount" />
-          </div>
-        </div>
-        <div v-if="expand && mode !== 'view'" @click="previewExpense" class="butSB">
-          Preview Expense
-        </div>
-        <div v-if="expand && mode !== 'view'" @click="addExpense" class="butPB">
-          Add Expense
-        </div>
       </div>
       <div class="exPc" v-if="mode === 'view'" v-bind:class="{ expanded: expand }">
         <div class="exPe">
-          <!-- {{expense.persons}} -->
           <div class="exPeC" v-for="person in expense.persons" :key="person.id">
             <div class="exPeCRight">
               <div>
@@ -76,19 +75,27 @@
                 <span v-text="person.name"></span>
               </div>
               <div class="m45">
-                  <span class="currency">₹</span>
-                  <span v-text="person.cost"></span>
+                <span class="currency" v-text="settings.currency"></span>
+                <span v-text="person.cost"></span>
               </div>
             </div>
           </div>
         </div>
-        <div class="exTot" :id="'expenseTot_' + expense.id" v-if="mode === 'view'">
-          <div>Total</div>
-          <div>
-            <span class="currency">₹</span>
-            <span v-text="expense.cost" />
-          </div>
+      </div>
+      <div class="exTot" :id="'expenseTot_' + expense.id">
+        <div>Total</div>
+        <div v-if="expand && mode !== 'view'" @click="addExpense" class="butPB">
+          <i class="bs-save"></i> Add Expense
         </div>
+        <div v-if="expand && mode !== 'view'" @click="previewExpense" class="butSB">
+          <i class="bs-preview"></i> Preview Expense
+        </div>
+  
+        <div>
+          <span class="currency" v-text="settings.currency"></span>
+          <span v-text="this.cost" />
+        </div>
+  
       </div>
     </div>
   </div>
@@ -107,7 +114,7 @@
         return this.expense && this.expense.id.indexOf("TEMP") === 0 && this.mode == "view";
       }
     },
-    props: ["personCollection", "expense", "expenseIteration", "expand"],
+    props: ["personCollection", "expense", "expenseIteration", "expand", "settings"],
     data() {
       return {
         name: "",
@@ -134,7 +141,6 @@
         } else {
           this.mode = "view"
         }
-        // this.mode = this.expense && this.expense.id ? (this.edit ? "edit" : "view") : "add";
         this.initPersons();
       },
       expandExpense(expense) {
@@ -146,11 +152,31 @@
           this.$router.push({
             query
           });
-          this.expand = false;
         } else {
-          expense.id = "TEMP_" + Math.random();
-          this.expand = false
+          this.expense.id = "TEMP_" + Math.random();
+          if (this.name && this.name == "") {
+            this.name = "Unnamed";
+          }
+          this.expense.name = this.name;
+          this.expense.persons = {}
+  
+          if (this.$route.query.expense === "new") {
+            let query = Object.assign({}, this.$route.query);
+            delete query.expense;
+            this.$router.push({
+              query
+            });
+          }
+          // this.expand = false
         }
+      },
+      editClick(event) {
+        this.edit = true;
+        this.mode = "edit";
+        if (this.expand) {
+          event.stopPropagation();
+        }
+        // this.$parent.expandFromChild(this.expense.id);
       },
       noAct() {
   
@@ -171,23 +197,37 @@
       initPersons() {
         this.initExpense();
         if (this.personCollection) {
-          for (var i = 0; i < this.personCollection.length; i++) {
-            var person = this.personCollection[i];
-            this.availablePersons.push({
-              id: person.id,
-              name: person.name,
-              cost: 0
-            });
+          if (this.personCollection.length != this.availablePersons.length) {
+            for (var i = 0; i < this.personCollection.length; i++) {
+              var person = this.personCollection[i];
+              this.availablePersons.push({
+                id: person.id,
+                name: person.name,
+                cost: 0
+              });
+            }
+            if (this.expense.id && this.expense.id !== "new" && this.mode !== "edit") {
+              this.initData();
+            }
           }
         }
       },
+      initData() {
+        this.name = this.expense.name
+        this.cost = this.expense.cost
+        this.date = this.expense.date
+        var avpCopy = JSON.parse(JSON.stringify(this.availablePersons))
+        var i = this.availablePersons.length
+        while (i--) {
+          if (this.expense.persons[this.availablePersons[i].id]) {
+            this.addPerson(this.expense.persons[this.availablePersons[i].id], i, true)
+          }
+        }
+        this.recalculateSplit();
+      },
+  
       addExpense() {
-        if (
-          this.name &&
-          this.name.trim().length > 0 &&
-          this.cost > 0 &&
-          this.costValidate
-        ) {
+        if (this.name && this.name.trim().length > 0 && this.cost > 0 && this.costValidate) {
           var expense = {
             createdOn: new Date(),
             name: this.name,
@@ -243,12 +283,7 @@
         }
       },
       previewExpense() {
-        if (
-          this.name &&
-          this.name.trim().length > 0 &&
-          this.cost > 0 &&
-          this.costValidate
-        ) {
+        if (this.name && this.name.trim().length > 0 && this.cost > 0 && this.costValidate) {
           var expense = {
             createdOn: new Date(),
             name: this.name,
@@ -287,18 +322,24 @@
       hideError() {
         this.error = null;
       },
-      addPerson(person, i) {
+      addPerson(person, i, pushPerson) {
         if (!this.persons[person.id]) {
           if (person.cost < this.cost) {
-            this.persons[person.id] = person.name;
-            this.selectedPersons.push({
-              id: person.id,
-              name: person.name,
-              cost: person.cost,
-              omitSplit: person.cost > 0
-            });
+            this.persons[person.id] = person.id;
+            if (pushPerson) {
+              this.selectedPersons.push(person);
+            } else {
+              this.selectedPersons.push({
+                id: person.id,
+                name: person.name,
+                cost: person.cost,
+                omitSplit: person.cost > 0
+              });
+            }
             this.availablePersons.splice(i, 1);
-            this.recalculateSplit();
+            if (!pushPerson) {
+              this.recalculateSplit();
+            }
           } else if (this.cost == undefined || this.cost === 0) {
             this.showError(
               "Expense Cost Cannot be Zero"
@@ -349,6 +390,12 @@
       },
       cost: function() {
         this.initPersons();
+      },
+      expand: function() {
+        if (!this.expand) {
+          console.log('gggg')
+          this.mode = "view";
+        }
       }
     }
   };
@@ -395,6 +442,24 @@
     font-size: 20px;
   }
   
+  .eWHead i {
+    opacity: 0;
+    margin-left: 20px;
+  }
+  
+  .eWHead:hover.eWHead i {
+    color: #ccc;
+    opacity: 1;
+  }
+  
+  .eWHead i.bs-edit:hover {
+    color: #2196F3!important;
+  }
+  
+  .eWHead i.bs-delete:hover {
+    color: #F44336!important;
+  }
+  
   .eWHead.edit {
     margin: 10px 20px;
     padding: 20px;
@@ -412,6 +477,10 @@
   }
   
   .eWHeadLeft {
+    float: left;
+  }
+  
+  .eWHeadLeft * {
     float: left;
   }
   
@@ -439,6 +508,7 @@
   
   .neHt {
     text-align: center;
+    margin: 10px;
   }
   
   .neHt span {
@@ -446,21 +516,14 @@
     background: #dedbdb;
     margin: 0 auto;
     border-radius: 4px;
-    padding: 1px 5px;
-    font-size: 20px;
+    padding: 5px;
+    font-size: 12px;
     color: #868585;
+    font-family: Arial;
   }
   
-  .neBut {
-    background: #ff4081;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    font-size: 20px;
-    color: #fff;
-    padding: 10px 15px;
-    border-radius: 20px;
-    cursor: pointer;
+  .eWHeadLeft .neHt {
+    margin: 0 10px;
   }
   
   .exPc {
@@ -468,9 +531,8 @@
     border-radius: 5px;
     height: 100%;
     width: calc(100% - 40px);
-    overflow: auto;
+    overflow: hidden;
     max-height: 250px;
-    display: table;
     visibility: hidden;
   }
   
@@ -478,7 +540,14 @@
     visibility: visible;
   }
   
-  .exPcTab {}
+  .exPcTab {
+    width: 100%;
+}
+
+.exPcTab:nth-of-type(2){
+    height: 215px;
+    overflow: auto;
+}
   
   .exPe {
     margin: 10px;
@@ -495,16 +564,16 @@
   .exPeCRight {
     float: right;
   }
-
-  .exPeCRight div{
+  
+  .exPeCRight div {
     float: left;
   }
-
-  .exPeCRight div img{
+  
+  .exPeCRight div img {
     float: left;
   }
-
-  .exPeCRight div span{
+  
+  .exPeCRight div span {
     float: left;
     padding-top: 10px;
   }
@@ -512,16 +581,20 @@
   .m45 {
     margin-left: 45px;
   }
+
+  .exPcTitle .exPcL,.exPcTitle .exPcR {
+    float: left;
+    width: 50%;
+}
   
-  .exPcL,
-  .exPcR {
+  .exPcTab .exPcL,.exPcTab .exPcR {
     height: 100%;
     display: table-cell;
     width: 50%;
     position: relative;
   }
   
-  .exPcR {
+  .exPcTab .exPcR {
     width: calc(50% - 1px);
     border-left: 1px solid #f1f1f1;
   }
@@ -580,7 +653,6 @@
   .butPB,
   .butSB {
     background: #5e2fb4;
-    position: absolute;
     padding: 10px;
     text-align: center;
     border-radius: 4px;
@@ -588,7 +660,7 @@
     text-transform: uppercase;
     right: 10px;
     bottom: 10px;
-    font-size: 12px;
+    font-size: 12px!important;
     cursor: pointer;
     box-shadow: 0px 1px 5px 2px rgba(103, 58, 183, 0.5);
   }
@@ -604,7 +676,7 @@
     bottom: 0;
     left: 0;
     border-top: 1px solid #eaeaea;
-    margin: 10px 0;
+    margin: 10px 30px;
   }
   
   .exTot div:first-of-type {
@@ -615,7 +687,7 @@
   .exTot div {
     float: right;
     font-size: 20px;
-    margin-top: 10px;
+    margin: 10px;
   }
   
   .exTot div:last-of-type {
