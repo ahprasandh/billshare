@@ -48,7 +48,7 @@
               <div class="pName" v-text="person.name"></div>
               <span class="currency" v-text="settings.currency"></span>
               <input type="number" v-model.number="person.cost" />
-              <div class="but" @click="addPerson(person)">+</div>
+              <div class="but bs-add" @click="addPerson(person)"></div>
             </div>
           </div>
           <div class="exPcR">
@@ -60,7 +60,7 @@
               <div class="pName" v-text="person.name"></div>
               <span class="currency" v-text="settings.currency"></span>
               <input type="number" v-model.number="person.cost" disabled="disabled" />
-              <div class="but" @click="removePerson(person, i)">-</div>
+              <div class="but bs-minus" @click="removePerson(person, i)"></div>
             </div>
           </div>
         </div>
@@ -629,7 +629,7 @@
   
   .exPcP .but {
     border-radius: 20px;
-    background: #ff8a80;
+    background: #64dd17;
     width: 20px;
     height: 18px;
     color: #fff;
@@ -641,7 +641,7 @@
   }
   
   .exPcR .but {
-    background: #64dd17;
+    background: #ff8a80;
   }
   
   .exPcP .pCont {
