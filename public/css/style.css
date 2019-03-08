@@ -36,7 +36,6 @@ table {
 }
 
 body {
-  position: absolute;
   top: 0;
 }
 
@@ -61,57 +60,63 @@ input[type=number]::-webkit-inner-spin-button, input[type=date]::-webkit-inner-s
 }
 
 @font-face {
-  font-family: Raffline;
-  src: url(../fonts/Raffline.ttf);
+  font-family: Hari;
+  src: url(../fonts/Hari.ttf);
 }
 
 * {
-  font-family: Raffline;
+  font-family: Hari;
 }
 
-#app, body, .home {
+html, body{
   height: 100%;
   width: 100%;
-  font-family: Raffline;
+}
+
+#app,.home{
+  height: 100%;
+  width: 100%;
+  font-family: Hari;
   color: #2c3e50;
+  overflow: hidden;
 }
 
 .tb {
   width: 100%;
-  height: 100px;
+  height: 6em;
   color: #fff;
   overflow: hidden;
   background: #5E34B0;
 }
 
 .tbT {
-  height: calc(100% - 35px);
+  height: calc(100% - 2.1em);
   background: #5E34B0;
 }
 
 .tbB {
-  height: 35px;
+  height: 2.1em;
   background: #45239E;
 }
 
 .tbT img {
   height: inherit;
-  top: 5px;
-  margin-left: 5px;
+  top: 0.3em;
+  margin-left: 0.3em;
   float: left;
   position: relative;
 }
 
 .pN {
   float: right;
-  margin-right: 10px;
+  margin-right: 0.6em;
   cursor: pointer;
 }
 
 .pN div {
   float: left;
   float: left;
-  margin-left: 10px;
+  margin-left: 0.6em;
 }
 
 .pT {
@@ -127,53 +132,53 @@ input[type=number]::-webkit-inner-spin-button, input[type=date]::-webkit-inner-s
 
 .cW {
   background: #f5f5f5;
-  height: calc(100% - 100px);
+  height:calc(100% - 6em);
+  overflow: auto;
 }
 
 .uW, .eW {
-  border-radius: 2px;
-  height: 70%;
+  border-radius: 0.036em;
   position: relative;
-  width: 25%;
-  -webkit-box-shadow: 0px 0px 10px 10px rgba(202, 202, 202, 0.34);
-  -moz-box-shadow: 0px 0px 10px 10px rgba(202, 202, 202, 0.34);
-  box-shadow: 0px 0px 10px 10px rgba(202, 202, 202, 0.34);
+  -webkit-box-shadow: 0em 0em 0.6em 0.6em rgba(202, 202, 202, 0.34);
+  -moz-box-shadow: 0em 0em 0.6em 0.6em rgba(202, 202, 202, 0.34);
+  box-shadow: 0em 0em 0.6em 0.6em rgba(202, 202, 202, 0.34);
   background: #fff;
   float: left;
-  top: 10%;
-  left: 3%;
+  margin: 3em 3em;
+  max-width: 35vw;
 }
 
 .eW {
-  width: 50%;
-  left: 15%;
-  height: calc(100% - 100px);
-  top: 10px;
+  height: calc(100% - 6em);
   background: #f5f5f5;
+  width: 65vw;
+  max-width: unset;
 }
 
 .pPic {
-  height: 25px;
-  border: 1px solid #c7cbeb;
-  border-radius: 20px;
-  margin: 5px;
-  padding: 0px;
+  height: 1.5em;
+  border:0.06em solid #c7cbeb;
+  border-radius: 1.2em;
+  margin: 0.3em!important;
+  padding: 0em!important;
+  max-width: calc(100% - 0.6em)!important;
+  max-height: calc(100% - 0.6em)!important;
 }
 
 .pName {
-  width: 70px;
+  width: 4.2em;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 5px 5px;
-  margin: 5px 0;
+  padding: 0.3em 0.3em;
+  margin: 0.3em 0;
   text-align: center;
-  font-size: 25px;
+  font-size: 1.5em;
 }
 
 input {
-  padding-left: 10px;
+  padding-left: 0.6em;
   border: none;
-  border-bottom: 1px solid #E0E0E0;
+  border-bottom:0.06em solid #E0E0E0;
   background: none;
 }
 
@@ -190,7 +195,7 @@ input:disabled {
 .err {
   position: absolute;
   top: 45%;
-  width: calc(100% - 20px);
+  width: calc(100% - 1.2em);
   text-align: center;
   z-index: 2;
   
@@ -198,14 +203,14 @@ input:disabled {
 
 .err div{
   color: #fff;
-  idth: 400px;
+  width: 24em;
     height: auto;
     margin: 0 auto;
-    padding: 10px;
+    padding: 0.6em;
     position: relative;
   background: #EF5350;
-  font-size: 25px;
-  border-radius: 4px;
-  padding: 10px;
-  box-shadow: 1px 1px 9px 5px rgba(223, 141, 141, 0.34);
+  font-size: 1.5em;
+  border-radius: 0.24em;
+  padding: 0.6em;
+  box-shadow:0.06em 0.06em 0.54em 0.3em rgba(223, 141, 141, 0.34);
 }

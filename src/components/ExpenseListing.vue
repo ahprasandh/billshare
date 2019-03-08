@@ -3,8 +3,8 @@
     <div class="ewT">
       Expenses <span>({{ expenseCollection.length }})</span>
     </div>
-    <div class="ewCon">
-      <Expense v-for="(expense, iter) in expenseCollection" :key="expense.id" :expense="expense" :personCollection="personCollection" :expenseIteration="iter" :expand="expense.expand" :settings="settings"/>
+    <div id="expenseContainer" class="ewCon">
+      <Expense v-for="(expense, iter) in expenseCollection" :key="expense.id" :expense="expense" :expenseIteration="iter" :expand="expense.expand" :settings="settings" />
     </div>
     <div class="neBut bs-add" @click="addExpense"></div>
   </div>
@@ -20,22 +20,22 @@
   .ewT span {
     font-size: 15px;
   }
-
-  .neBut{
-      background: #ff4081;
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      font-size: 20px;
-      color: #fff;
-      padding: 10px;
-      border-radius: 20px;
-      cursor: pointer;
-      height: 20px;
-      width: 20px;
-      text-align: center;
-      font-weight: 900;
-      box-shadow: 1px 1px 7px 3px rgb(0,0,0,0.5);
+  
+  .neBut {
+    background: #ff4081;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 20px;
+    color: #fff;
+    padding: 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+    text-align: center;
+    font-weight: 900;
+    box-shadow: 1px 1px 7px 3px rgb(0, 0, 0, 0.5);
   }
   
   .ewCon {
@@ -55,7 +55,7 @@
   } from 'timers';
   export default {
     name: "ExpenseListing",
-    props: ["settings","personCollection"],
+    props: ["settings"],
     computed: {
       ...mapState(["isAdmin"])
     },
@@ -63,7 +63,9 @@
       Expense
     },
     data() {
-      return {expenseCollection:[]};
+      return {
+        expenseCollection: []
+      };
     },
     mounted() {
       this.initExpenses()
@@ -84,6 +86,7 @@
         //     this.expenseCollection = expenseCollection;
         //   });
         this.expenseCollection=[{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc1",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P1"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P2"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P3"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P4"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P5"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P6"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P7"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P8"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P9"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P11"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P12"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P13"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P14"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P15"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P16"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P17"}];
+        // this.$store.commit("setexpenseCollection", this.expenseCollection);
       },
       expandExpense() {
         if (this.expenseCollection && this.expenseCollection[0].id !== "new") {
@@ -102,18 +105,21 @@
           }
           if (this.$route.query.expense) {
             var elem = document.getElementById(
-              "expenseTot_" + this.$route.query.expense
+              "expense_" + this.$route.query.expense
             );
             if (elem) {
-              elem.scrollIntoView(false);
+              setTimeout(function() {
+                elem.scrollIntoView(true);
+                document.getElementById("expenseContainer").scrollTop -= 100;
+              }, 200);
             }
           }
         }
       },
       addExpense() {
-        if (this.$route.query.expense===undefined ){
+        if (this.$route.query.expense === undefined) {
           this.pushRouter("new");
-        }else if(this.$route.query.expense !== "new") {
+        } else if (this.$route.query.expense !== "new") {
           this.pushRouter("new");
         }
       },
@@ -122,16 +128,16 @@
       },
       expandFromChild(id) {
         if (this.expenseCollection[0].id === "new") {
-          this.expenseCollection[0].id="TEMP_"+Math.random();
-          let func=this.pushRouter
-          setTimeout(function(){
+          this.expenseCollection[0].id = "TEMP_" + Math.random();
+          let func = this.pushRouter
+          setTimeout(function() {
             func(id)
-          },200)
-        }else{
+          }, 200)
+        } else {
           this.pushRouter(id);
         }
       },
-      pushRouter(id){
+      pushRouter(id) {
         router.push({
           query: {
             expense: id

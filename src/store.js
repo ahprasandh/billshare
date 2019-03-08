@@ -8,12 +8,20 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     currentUser: null,
-    isAdmin: false
+    isAdmin: false,
+    personCollection:[],
+    expenseCollection:[]
   },
   mutations: {
     setCurrentUser(state, user) {
       state.currentUser = user;
       state.isAdmin = user && user.uid === constants.adminUid;
+    },
+    setPersonCollection(state,personCollection){
+      state.personCollection=personCollection;
+    },
+    setexpenseCollection(state,expenseCollection){
+      state.expenseCollection=expenseCollection;
     }
   },
   actions: {}

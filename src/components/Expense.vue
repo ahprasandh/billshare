@@ -41,14 +41,14 @@
         </div>
         <div class="exPcTab">
           <div class="exPcL">
-            <div class="exPcP" v-for="person in availablePersons" :key="person.id">
+            <div class="exPcP" v-for="(person,i) in availablePersons" :key="person.id">
               <div class="pCont">
                 <img class="pPic" src="../assets/guest.svg" />
               </div>
               <div class="pName" v-text="person.name"></div>
               <span class="currency" v-text="settings.currency"></span>
               <input type="number" v-model.number="person.cost" />
-              <div class="but bs-add" @click="addPerson(person)"></div>
+              <div class="but bs-add" @click="addPerson(person, i)"></div>
             </div>
           </div>
           <div class="exPcR">
@@ -109,12 +109,12 @@
   export default {
     name: "ExpenseEditor",
     computed: {
-      ...mapState(["isAdmin"]),
+      ...mapState(["isAdmin","personCollection"]),
       checkTemp: function() {
         return this.expense && this.expense.id.indexOf("TEMP") === 0 && this.mode == "view";
       }
     },
-    props: ["personCollection", "expense", "expenseIteration", "expand", "settings"],
+    props: ["expense", "expenseIteration", "expand", "settings"],
     data() {
       return {
         name: "",
@@ -307,7 +307,7 @@
                 this.personCollection[i].modified = true;
               }
             }
-            // console.log(JSON.stringify(this.personCollection));
+            this.$store.commit("setPersonCollection", this.personCollection);
           }
         } else if (!this.costValidate) {
           this.showError("Billed Person Amount Invalid");
@@ -404,47 +404,47 @@
 <style>
   .billC {
     position: relative;
-    margin: 25px 10px;
+    margin: 1.5em 0.6em;
     background: #fff;
-    box-shadow: 2px 1px 5px -4px rgba(0, 0, 0, 0.75);
+    box-shadow: 0.12em 0.06em 0.3em -0.24em rgba(0, 0, 0, 0.75);
   }
   
   .neW {
-    max-height: 50px;
+    max-height: 3em;
     cursor: pointer;
     transition: max-height 0.25s ease-out;
     overflow: hidden;
   }
   
   .neW.expanded {
-    max-height: 500px;
+    max-height: 30em;
     transition: max-height 0.25s ease-in;
   }
   
   .billC:before {
-    top: -10px !important;
-    background-position: 0 -22px !important;
+    top: -0.6em !important;
+    background-position: 0 -1.32em !important;
     content: "";
     display: block;
     position: absolute;
     left: 0;
     right: 0;
-    height: 10px;
+    height: 0.6em;
     background: linear-gradient( 45deg, transparent 33.333%, #fff 33.333%, #fff 66.667%, transparent 66.667%), linear-gradient( -45deg, transparent 33.333%, #fff 33.333%, #fff 66.667%, transparent 66.667%);
-    background-size: 8px 20px;
+    background-size: 0.48em 1.2em;
   }
   
   .eWHead {
-    height: 20px;
-    margin: 10px 20px;
-    padding: 10px 20px;
+    overflow:auto;
+    margin: 0.6em 1.2em;
+    padding: 0.6em 1.2em;
     color: #2c3e50;
-    font-size: 20px;
+    font-size: 1.2em;
   }
   
   .eWHead i {
     opacity: 0;
-    margin-left: 20px;
+    margin-left: 1.2em;
   }
   
   .eWHead:hover.eWHead i {
@@ -461,19 +461,20 @@
   }
   
   .eWHead.edit {
-    margin: 10px 20px;
-    padding: 20px;
-    border-bottom: 1px solid #e4e2e2;
+    margin: 0.6em 1.2em;
+    padding: 0.6em;
+    border-bottom: 0.06em solid #e4e2e2;
   }
   
   .eWHead input {
-    font-size: 20px;
+    font-size: 1.2em;
     background: #e3e2e4;
-    border: 1px solid #c7c6c6;
+    max-width: 35vw;
+    border: 0.06em solid #c7c6c6;
   }
   
   .eWHead.expanded {
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 0.06em solid #eaeaea;
   }
   
   .eWHeadLeft {
@@ -489,50 +490,50 @@
   }
   
   .eWHeadRight span {
-    padding-left: 5px;
+    padding-left: 0.3em;
   }
   
   .eWHeadRight span:first-of-type {
-    margin-right: 30px;
+    margin-right: 1.8em;
   }
   
   .eWHeadRight.expanded span:first-of-type {
-    margin-right: 0px;
+    margin-right: 0;
   }
   
   .currency {
     color: #6f6c6c;
-    padding-left: 5px;
-    font-size: 15px;
+    padding-right: 0.3em!important;
+    font-size: 0.9em;
   }
   
   .neHt {
     text-align: center;
-    margin: 10px;
+    margin: 0.6em;
   }
   
   .neHt span {
     text-align: center;
     background: #dedbdb;
     margin: 0 auto;
-    border-radius: 4px;
-    padding: 5px;
-    font-size: 12px;
+    border-radius: 0.24em;
+    padding: 0.3em;
+    font-size: 0.72em;
     color: #868585;
     font-family: Arial;
   }
   
   .eWHeadLeft .neHt {
-    margin: 0 10px;
+    margin: 0 0.6em;
   }
   
   .exPc {
-    margin: 10px 20px;
-    border-radius: 5px;
+    margin: 0.6em 1.2em;
+    border-radius: 0.3em;
     height: 100%;
-    width: calc(100% - 40px);
+    width: calc(100% - 2.4em);
     overflow: hidden;
-    max-height: 250px;
+    max-height: 15em;
     visibility: hidden;
   }
   
@@ -543,20 +544,23 @@
   .exPcTab {
     width: 100%;
 }
+.exPcTitle{
+    height: 5vh;
+}
 
 .exPcTab:nth-of-type(2){
-    height: 215px;
+    max-height: 12em;
     overflow: auto;
 }
   
   .exPe {
-    margin: 10px;
+    margin: 0.6em;
     overflow: auto;
   }
   
   .exPeC {
     width: 100%;
-    font-size: 20px;
+    font-size: 1.2em;
     color: #6f6f6f;
     display: inline-block;
   }
@@ -575,11 +579,11 @@
   
   .exPeCRight div span {
     float: left;
-    padding-top: 10px;
+    padding-top: 0.6em;
   }
   
   .m45 {
-    margin-left: 45px;
+    margin-left: 2.7em;
   }
 
   .exPcTitle .exPcL,.exPcTitle .exPcR {
@@ -595,49 +599,61 @@
   }
   
   .exPcTab .exPcR {
-    width: calc(50% - 1px);
-    border-left: 1px solid #f1f1f1;
+    width: calc(50% - 0.06em);
+    border-left: 0.06em solid #f1f1f1;
   }
   
   .exPcT {
-    padding: 10px 10px;
+    padding: 0.6em 1.2em;
     text-align: center;
     color: #5d5d5d;
-    font-size: 25px;
+    font-size: 1.5em;
   }
   
   .exPcP {
-    height: 100%;
-    width: calc(100% - 30px);
-    border-radius: 7px;
-    margin: 15px 15px;
-    -webkit-box-shadow: 1px 1px 10px 2px rgba(202, 202, 202, 0.34);
-    -moz-box-shadow: 1px 1px 10px 2px rgba(202, 202, 202, 0.34);
-    box-shadow: 1px 1px 10px 2px rgba(202, 202, 202, 0.34);
+    height: 3em;
+    width: calc(100% - 1.8em);
+    border-radius: 0.42em;
+    margin: 0.9em 0.9em;
+    -webkit-box-shadow: 0.06em 0.06em 1.2em 0.12em rgba(202, 202, 202, 0.34);
+    -moz-box-shadow: 0.06em 0.06em 1.2em 0.12em rgba(202, 202, 202, 0.34);
+    box-shadow: 0.06em 0.06em 1.2em 0.12em rgba(202, 202, 202, 0.34);
     display: inline-block;
+    overflow: hidden;
   }
   
   .exPcP * {
     float: left;
-    margin: 5px 5px 0 0;
-    padding: 5px;
+    height: 100%;
+    padding: 0.3em 0.3em;
+    margin: 0.3em 0;
+    font-size: 1.5em;
   }
+
+  .exPcP .currency{
+    font-size: 1.3em;
+    padding-top: 0.7em;
+}
   
   .exPcP input {
-    max-width: 70px;
+    max-width: 4.2em;
+  }
+  .exPcP input[type=number]{
+    padding: 0;
+    font-size: 1.2em;
   }
   
   .exPcP .but {
-    border-radius: 20px;
+    border-radius: 1.2em;
     background: #64dd17;
-    width: 20px;
-    height: 18px;
+    width: 1.2em;
+    height: 1.08em;
     color: #fff;
     text-align: center;
     cursor: pointer;
     position: absolute;
     right: 0;
-    padding-top: 7px;
+    padding-top: 0.42em;
   }
   
   .exPcR .but {
@@ -648,25 +664,28 @@
     margin: 0;
     padding: 0;
     background: #f1f1f1;
+    height: 100%;
+    width: 50px;
+    overflow: hidden;
   }
   
   .butPB,
   .butSB {
     background: #5e2fb4;
-    padding: 10px;
+    padding: 0.6em;
     text-align: center;
-    border-radius: 4px;
+    border-radius: 0.24em;
     color: #fff;
     text-transform: uppercase;
-    right: 10px;
-    bottom: 10px;
-    font-size: 12px!important;
+    right: 1.2em;
+    bottom: 1.2em;
+    font-size: 0.72em!important;
     cursor: pointer;
-    box-shadow: 0px 1px 5px 2px rgba(103, 58, 183, 0.5);
+    box-shadow: 0em 0.06em 0.3em 0.12em rgba(103, 58, 183, 0.5);
   }
   
   .butSB {
-    right: 130px;
+    right: 7.8em;
     background: #fff;
     color: #5e2fb4;
     box-shadow: unset;
@@ -675,22 +694,22 @@
   .exTot {
     bottom: 0;
     left: 0;
-    border-top: 1px solid #eaeaea;
-    margin: 10px 30px;
+    border-top: 0.06em solid #eaeaea;
+    margin: 1.2em 1.8em;
   }
   
   .exTot div:first-of-type {
     float: left;
-    margin-left: 20px;
+    margin-left: 1.2em;
   }
   
   .exTot div {
     float: right;
-    font-size: 20px;
-    margin: 10px;
+    font-size: 1.2em;
+    margin: 0.6em;
   }
   
   .exTot div:last-of-type {
-    margin-right: 10px;
+    margin-right: 0.6em;
   }
 </style>
