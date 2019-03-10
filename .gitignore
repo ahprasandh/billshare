@@ -2,6 +2,7 @@
 node_modules
 docs/js/chunk-vendors.js
 src/constants.js
+ignore
 
 # local env files
 .env.local

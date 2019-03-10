@@ -2,65 +2,78 @@
   <div :id="'expense_' + expense.id" class="billC">
     <div class="neW" v-bind:class="{ expanded: expand }">
       <div class="err" v-if="error">
-        <div v-text="error"></div>
+        <span v-text="error"></span>
       </div>
       <div class="eWHead" @click="expandExpense(expense)" v-bind:class="{ edit: mode !=='view', expanded: expand }">
         <div class="eWHeadLeft">
           <input @click.stop="noAct" v-if="mode !== 'view'" type="text" v-model="name" placeholder="Enter Name" />
           <span :id="'expenseName_' + expense.id" v-else v-text="this.name" />
-          <i v-if="mode==='view'" @click="editClick($event)" class="bs-edit"></i>
-          <i v-if="mode==='view'" @click.stop="mode='edit';expand=true" class="bs-delete"></i>
+          <i title="Edit Expense" v-if="mode==='view' && isAdmin" @click="editClick($event)" class="bs-edit"></i>
+          <i title="Move to Trash" v-if="mode==='view' && isAdmin" @click.stop="mode='edit';expand=true" class="bs-delete"></i>
           <div v-if="checkTemp" class="neHt">
             <span class="bs-save"> Not Saved</span>
           </div>
         </div>
-        <div class="eWHeadRight" v-bind:class="{ expanded: expand }">
+        <div class="eWHeadRight" v-if="mode === 'view'" v-bind:class="{ expanded: expand }">
+          <span class="costHo" v-if="!expand">
+                                            <div v-text="settings.currency"/>
+                                            <span v-text="this.cost" />
+                                        </span>
+          <span v-text="this.date" />
+        </div>
+        <div class="eWHeadRight" v-else-if="expand">
+          <input @click.stop="noAct" type="number" v-model.number="cost" placeholder="Enter Amount" size="1" />
+          <div class="currency" v-text="settings.currency" />
           <input @click.stop="noAct" v-if="mode !== 'view'" type="date" v-model="date" placeholder="Enter Date" />
-          <span v-else-if="this.date" v-text="this.date" />
-          <span v-if="!expand || mode!=='view'" class="currency" v-text="settings.currency"></span>
-          <input @click.stop="noAct" v-if="mode !== 'view' && expand" type="number" v-model.number="cost" placeholder="Enter Amount" />
-          <span v-else-if="!expand" v-text="this.cost" />
         </div>
       </div>
       <div class="exPc" v-if="mode !== 'view'" v-bind:class="{ expanded: expand }">
-        <div v-if="settings && settings.show.help">
+        <div class="exHelpT" v-if="settings && settings.show.help">
           <div class="neHt">
-            <span class="bs-help">Add Persons to Billed Persons from Available Persons to split the bill amount</span>
+            <span class="bs-help">Add Persons to Billed Persons to split the bill amount</span>
           </div>
           <div class="neHt">
-            <span class="bs-help"> To auto calculate bill set '0' as cost</span>
+            <span class="bs-help"> To auto calculate split bill set '0' as cost</span>
           </div>
         </div>
         <div class="exPcTitle">
-          <div class="exPcL">
-            <div class="exPcT">Available Persons</div>
+          <div class="exPcL" v-bind:class="{search:search.show}">
+            <span class="exPcT">Available Persons</span>
+            <input class="searchI" type="text" v-model.trim="search.text" />
+            <i class="bs-search" @click="search.show=!search.show;"></i>
           </div>
           <div class="exPcR">
-            <div class="exPcT">Billed Persons</div>
+            <span class="exPcT">Billed Persons</span>
           </div>
         </div>
         <div class="exPcTab">
           <div class="exPcL">
-            <div class="exPcP" v-for="(person,i) in availablePersons" :key="person.id">
-              <div class="pCont">
-                <img class="pPic" src="../assets/guest.svg" />
+            <div class="exPcPW" v-bind:class="{help:settings.show.help}">
+  
+              <div class="exPcP" v-for="(person,i) in availablePersons" :key="person.id" v-show="person.name.toLowerCase().indexOf(search.text) != -1">
+                <div class="pCont">
+                  <img v-if="person.photo" class="pPic" :src="person.photo" />
+                  <img v-else class="pPic" src="../assets/guest.svg" />
+                </div>
+                <div class="pName" v-text="person.name"></div>
+                <span class="currency" v-text="settings.currency"></span>
+                <input type="number" v-model.number="person.cost" />
+                <div class="but bs-add" @click="addPerson(person, i)"></div>
               </div>
-              <div class="pName" v-text="person.name"></div>
-              <span class="currency" v-text="settings.currency"></span>
-              <input type="number" v-model.number="person.cost" />
-              <div class="but bs-add" @click="addPerson(person, i)"></div>
             </div>
           </div>
           <div class="exPcR">
-  
-            <div class="exPcP" v-for="(person, i) in selectedPersons" :key="person.id">
-              <div class="pCont">
-                <img class="pPic" src="../assets/guest.svg" />
+            <div class="exPcPW" v-bind:class="{help:settings.show.help}">
+              <div class="exPcP" v-for="(person, i) in selectedPersons" :key="person.id">
+                <div class="pCont">
+                  <img v-if="person.photo" class="pPic" :src="person.photo" />
+                  <img v-else class="pPic" src="../assets/guest.svg" />
+                </div>
+                <div class="pName" v-text="person.name"></div>
+                <span class="currency" v-text="settings.currency"></span>
+                <input type="number" v-model.number="person.cost" disabled="disabled" />
+                <div class="but bs-minus" @click="removePerson(person, i)"></div>
               </div>
-              <div class="pName" v-text="person.name"></div>
-              <span class="currency" v-text="settings.currency"></span>
-              <input type="number" v-model.number="person.cost" disabled="disabled" />
-              <div class="but bs-minus" @click="removePerson(person, i)"></div>
             </div>
           </div>
         </div>
@@ -70,7 +83,7 @@
           <div class="exPeC" v-for="person in expense.persons" :key="person.id">
             <div class="exPeCRight">
               <div>
-                <img v-if="person.photo" class="pPic" src="../assets/guest.svg" />
+                <img v-if="person.photo" class="pPic" :src="person.photo" />
                 <img v-else class="pPic" src="../assets/guest.svg" />
                 <span v-text="person.name"></span>
               </div>
@@ -109,12 +122,12 @@
   export default {
     name: "ExpenseEditor",
     computed: {
-      ...mapState(["isAdmin","personCollection"]),
+      ...mapState(["isAdmin", "personCollection", "settings"]),
       checkTemp: function() {
         return this.expense && this.expense.id.indexOf("TEMP") === 0 && this.mode == "view";
       }
     },
-    props: ["expense", "expenseIteration", "expand", "settings"],
+    props: ["expense", "expenseIteration", "expand"],
     data() {
       return {
         name: "",
@@ -126,7 +139,11 @@
         availablePersons: [],
         error: null,
         mode: "view",
-        edit: false
+        edit: false,
+        search: {
+          text: '',
+          show: false
+        }
       };
     },
     mounted() {
@@ -152,6 +169,9 @@
           this.$router.push({
             query
           });
+          if (this.mode !== "view") {
+            this.$parent.resetPreview()
+          }
         } else {
           this.expense.id = "TEMP_" + Math.random();
           if (this.name && this.name == "") {
@@ -159,7 +179,7 @@
           }
           this.expense.name = this.name;
           this.expense.persons = {}
-  
+          this.$parent.resetPreview();
           if (this.$route.query.expense === "new") {
             let query = Object.assign({}, this.$route.query);
             delete query.expense;
@@ -203,7 +223,8 @@
               this.availablePersons.push({
                 id: person.id,
                 name: person.name,
-                cost: 0
+                cost: 0,
+                photo: person.photo
               });
             }
             if (this.expense.id && this.expense.id !== "new" && this.mode !== "edit") {
@@ -284,36 +305,70 @@
       },
       previewExpense() {
         if (this.name && this.name.trim().length > 0 && this.cost > 0 && this.costValidate) {
-          var expense = {
-            createdOn: new Date(),
-            name: this.name,
-            cost: this.cost,
-            date: this.date ? new Date(this.date) : null,
-            persons: this.persons
-          };
-  
-          for (var id in expense.persons) {
-            for (var i = 0; i < this.personCollection.length; i++) {
-              if (id === this.personCollection[i].id) {
-                this.personCollection[i].expenses["<TEMP>"] = {
-                  cost: expense.persons[id].cost,
-                  id: "<TEMP>"
-                };
+          this.renderPreview()
+        } else if (!this.costValidate) {
+          this.showError("Bill Split not valid");
+          this.renderPreview();
+        } else {
+          this.showError("Invalid Bill");
+          this.$parent.resetPreview();
+        }
+      },
+      renderPreview() {
+        for (var i = 0; i < this.personCollection.length; i++) {
+          var id = this.personCollection[i].id;
+          if (this.persons[id]) {
+            if (this.mode === "add") {
+              this.personCollection[i].modify = {
+                id: this.expense.id,
+                name: this.name,
+                mode: "add",
+                balPayRequired: this.personCollection[i].payment.balPayRequired + this.persons[id].cost,
+                cost: this.persons[id].cost
+              };
+              this.personCollection[i].modified = true;
+            } else if (this.mode === "edit") {
+              if (this.personCollection[i].expenses[this.expense.id]) {
+                if (this.persons[id].cost === this.personCollection[i].expenses[this.expense.id].cost) {
+                  this.personCollection[i].modified = false;
+                } else {
+                  this.personCollection[i].modify = {
+                    id: this.expense.id,
+                    name: this.expense.name,
+                    mode: this.persons[id].cost > this.personCollection[i].expenses[this.expense.id].cost ? "add" : "sub",
+                    balPayRequired: this.personCollection[i].payment.balPayRequired + this.persons[id].cost - this.personCollection[i].expenses[this.expense.id].cost,
+                    cost: Math.abs(this.persons[id].cost - this.personCollection[i].expenses[this.expense.id].cost)
+                  };
+                  this.personCollection[i].modified = true;
+                }
+              } else {
                 this.personCollection[i].modify = {
+                  id: this.expense.id,
+                  name: this.name,
                   mode: "add",
-                  toPay: this.personCollection[i].toPay + expense.persons[id].cost,
-                  change: expense.persons[id].cost
+                  balPayRequired: this.personCollection[i].payment.balPayRequired + this.persons[id].cost,
+                  cost: this.persons[id].cost
                 };
                 this.personCollection[i].modified = true;
               }
             }
-            this.$store.commit("setPersonCollection", this.personCollection);
+  
+          } else if (this.expense.persons[id]) {
+            this.personCollection[i].modify = {
+              id: this.expense.id,
+              name: this.expense.name,
+              mode: "sub",
+              balPayRequired: this.personCollection[i].payment.balPayRequired - this.personCollection[i].expenses[this.expense.id].cost,
+              cost: this.personCollection[i].expenses[this.expense.id].cost
+            };
+            this.personCollection[i].modified = true;
+            console.log(this.personCollection[i])
+          } else {
+            this.personCollection[i].modified = false;
           }
-        } else if (!this.costValidate) {
-          this.showError("Billed Person Amount Invalid");
-        } else {
-          this.showError("Invalid Bill");
+          // console.log(JSON.stringify(this.personCollection))
         }
+        this.$store.commit("setPersonCollection", this.personCollection);
       },
       showError(message) {
         this.error = message;
@@ -324,7 +379,7 @@
       },
       addPerson(person, i, pushPerson) {
         if (!this.persons[person.id]) {
-          if (person.cost < this.cost) {
+          if ((person.cost < this.cost) && this.name && this.name.length > 0) {
             this.persons[person.id] = person.id;
             if (pushPerson) {
               this.selectedPersons.push(person);
@@ -333,6 +388,7 @@
                 id: person.id,
                 name: person.name,
                 cost: person.cost,
+                photo: person.photo,
                 omitSplit: person.cost > 0
               });
             }
@@ -341,13 +397,11 @@
               this.recalculateSplit();
             }
           } else if (this.cost == undefined || this.cost === 0) {
-            this.showError(
-              "Expense Cost Cannot be Zero"
-            );
+            this.showError("Expense Cost Cannot be Zero");
+          } else if (this.name == undefined || this.name.length === 0) {
+            this.showError("Expense Name Cannot be Empty");
           } else {
-            this.showError(
-              "Individual Cost must be less than total bill cost to share bill"
-            );
+            this.showError("Individual Cost must be less than total bill cost to share bill");
           }
         }
       },
@@ -367,6 +421,9 @@
           this.persons[this.selectedPersons[i].id] = this.selectedPersons[i];
         }
         this.costValidate = checkCost === this.cost;
+        if (this.mode !== "view") {
+          this.previewExpense();
+        }
       },
       removePerson(person, i) {
         if (this.persons[person.id]) {
@@ -393,7 +450,8 @@
       },
       expand: function() {
         if (!this.expand) {
-          console.log('gggg')
+          console.log('hhhh')
+          this.$parent.resetPreview();
           this.mode = "view";
         }
       }
@@ -411,13 +469,12 @@
   
   .neW {
     max-height: 3em;
-    cursor: pointer;
     transition: max-height 0.25s ease-out;
     overflow: hidden;
   }
   
   .neW.expanded {
-    max-height: 30em;
+    max-height: 45em;
     transition: max-height 0.25s ease-in;
   }
   
@@ -435,7 +492,8 @@
   }
   
   .eWHead {
-    overflow:auto;
+    overflow: auto;
+    cursor: pointer;
     margin: 0.6em 1.2em;
     padding: 0.6em 1.2em;
     color: #2c3e50;
@@ -444,10 +502,12 @@
   
   .eWHead i {
     opacity: 0;
-    margin-left: 1.2em;
+    margin: -0.2em 0 0 1.2em;
+    font-size: 1.3em;
   }
   
-  .eWHead:hover.eWHead i {
+  .eWHead:hover.eWHead i,
+  .eWHead.expanded.eWHead i {
     color: #ccc;
     opacity: 1;
   }
@@ -469,8 +529,22 @@
   .eWHead input {
     font-size: 1.2em;
     background: #e3e2e4;
-    max-width: 35vw;
     border: 0.06em solid #c7c6c6;
+  }
+  
+  .eWHead input[type=date],
+  .eWHead input[type=number] {
+    max-width: 33%;
+  }
+  
+  .eWHead input[type=date]::-webkit-calendar-picker-indicator {
+    font-size: 18px;
+    padding: 0;
+    margin: 0
+  }
+  
+  .eWHead input[type=date]::-webkit-calendar-picker-indicator:hover {
+    cursor: pointer;
   }
   
   .eWHead.expanded {
@@ -487,14 +561,27 @@
   
   .eWHeadRight {
     float: right;
+    width: calc(50%);
+  }
+  
+  .eWHeadRight * {
+    float: right;
   }
   
   .eWHeadRight span {
     padding-left: 0.3em;
   }
   
-  .eWHeadRight span:first-of-type {
-    margin-right: 1.8em;
+  .eWHeadRight div.currency {
+    padding: 0.7em;
+  }
+  
+  .eWHeadRight .costHo * {
+    float: left;
+  }
+  
+  .eWHeadRight .costHo {
+    margin-left: 1.8em;
   }
   
   .eWHeadRight.expanded span:first-of-type {
@@ -515,7 +602,7 @@
   .neHt span {
     text-align: center;
     background: #dedbdb;
-    margin: 0 auto;
+    margin: 0.25em auto;
     border-radius: 0.24em;
     padding: 0.3em;
     font-size: 0.72em;
@@ -524,7 +611,7 @@
   }
   
   .eWHeadLeft .neHt {
-    margin: 0 0.6em;
+    margin: -0.5em 0.6em;
   }
   
   .exPc {
@@ -533,7 +620,7 @@
     height: 100%;
     width: calc(100% - 2.4em);
     overflow: hidden;
-    max-height: 15em;
+    max-height: 30vh;
     visibility: hidden;
   }
   
@@ -543,15 +630,21 @@
   
   .exPcTab {
     width: 100%;
-}
-.exPcTitle{
+  }
+  
+  .exPcTitle {
     height: 5vh;
-}
-
-.exPcTab:nth-of-type(2){
+    overflow: hidden;
+  }
+  
+  .exHelpT {
+    height: 5vh;
+  }
+  
+  .exPcTab:nth-of-type(2) {
     max-height: 12em;
     overflow: auto;
-}
+  }
   
   .exPe {
     margin: 0.6em;
@@ -585,17 +678,25 @@
   .m45 {
     margin-left: 2.7em;
   }
-
-  .exPcTitle .exPcL,.exPcTitle .exPcR {
-    float: left;
-    width: 50%;
-}
   
-  .exPcTab .exPcL,.exPcTab .exPcR {
+  .exPcTitle .exPcL,
+  .exPcTitle .exPcR {
+    float: left;
+    width: calc(50% - 2vw);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    text-align: center;
+    padding: 1vh 1vw;
+  }
+  
+  .exPcTab .exPcL,
+  .exPcTab .exPcR {
     height: 100%;
     display: table-cell;
     width: 50%;
     position: relative;
+    vertical-align: top;
   }
   
   .exPcTab .exPcR {
@@ -604,68 +705,115 @@
   }
   
   .exPcT {
-    padding: 0.6em 1.2em;
+    padding: 0em 1vw;
     text-align: center;
     color: #5d5d5d;
     font-size: 1.5em;
+    width: calc(100% - 2vw);
+    transition: width .1s ease-in-out;
+    display: block;
   }
   
+  .exPcL.search .exPcT {
+    display: none;
+    width: 0%;
+    transition: width .1s ease-in-out;
+  }
+  
+  .exPcL .searchI {
+    font-size: 20px;
+    width: 0%;
+    transition: width .1s ease-in-out;
+    margin-top: 50em;
+  }
+  
+  .exPcL.search .searchI {
+    width: 50%;
+    transition: width .3s ease-in-out;
+    margin-top: unset;
+  }
+  
+  .exPcL .bs-search {
+    font-size: 25px;
+    cursor: pointer;
+    top: 0.2em;
+    right: 2em;
+    position: absolute;
+    color: #a4a4a4;
+  }
+  
+  .exPcL .bs-search:hover,
+  .exPcL.search .bs-search {
+    color: #2196F3
+  }
+  
+  .exPcPW {
+    height: 20vh;
+    overflow-y: scroll;
+  }
+  
+  .exPcPW.help {
+    max-height: 18vh;
+  }
+  
+  .exPcPW * {
+    float: left;
+    font-size: 1.2em;
+    margin: 0.3em 0;
+  }
+
   .exPcP {
     height: 3em;
     width: calc(100% - 1.8em);
     border-radius: 0.42em;
-    margin: 0.9em 0.9em;
-    -webkit-box-shadow: 0.06em 0.06em 1.2em 0.12em rgba(202, 202, 202, 0.34);
-    -moz-box-shadow: 0.06em 0.06em 1.2em 0.12em rgba(202, 202, 202, 0.34);
-    box-shadow: 0.06em 0.06em 1.2em 0.12em rgba(202, 202, 202, 0.34);
-    display: inline-block;
-    overflow: hidden;
-  }
-  
-  .exPcP * {
-    float: left;
-    height: 100%;
-    padding: 0.3em 0.3em;
-    margin: 0.3em 0;
-    font-size: 1.5em;
+    -webkit-box-shadow: 0.2em 0.2em 1.2em 0.12em rgba(202, 202, 202, 0.34);
+    box-shadow: 0.1em 0.2em 0.2em 0.02em rgba(202, 202, 202, 0.34);
+    position: relative;
+    background: #fafafa;
+    margin: 0.6em 1em;
+    width: calc(100% - 2em);
   }
 
-  .exPcP .currency{
+  
+  .exPcPW .pName {
+    padding: 0.5em 0.3em;
+  }
+  
+  .exPcPW .currency {
     font-size: 1.3em;
     padding-top: 0.7em;
-}
-  
-  .exPcP input {
-    max-width: 4.2em;
   }
-  .exPcP input[type=number]{
-    padding: 0;
+  
+  .exPcPW input {
+    max-width: 25%;
+  }
+  
+  .exPcPW input[type=number] {
+    padding-top: 0.4em;
     font-size: 1.2em;
   }
   
-  .exPcP .but {
+  .exPcPW .but {
     border-radius: 1.2em;
     background: #64dd17;
-    width: 1.2em;
-    height: 1.08em;
+    width: 1em;
+    height: 1em;
     color: #fff;
     text-align: center;
     cursor: pointer;
     position: absolute;
-    right: 0;
-    padding-top: 0.42em;
+    right: -0.7em;
+    padding: 0.2em;
+    margin-top: 0.6em;
   }
   
   .exPcR .but {
     background: #ff8a80;
   }
   
-  .exPcP .pCont {
+  .exPcPW .pCont {
     margin: 0;
     padding: 0;
-    background: #f1f1f1;
-    height: 100%;
-    width: 50px;
     overflow: hidden;
   }
   
@@ -696,6 +844,8 @@
     left: 0;
     border-top: 0.06em solid #eaeaea;
     margin: 1.2em 1.8em;
+    height: 2em;
+    overflow: hidden;
   }
   
   .exTot div:first-of-type {

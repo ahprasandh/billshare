@@ -4,7 +4,7 @@
       Expenses <span>({{ expenseCollection.length }})</span>
     </div>
     <div id="expenseContainer" class="ewCon">
-      <Expense v-for="(expense, iter) in expenseCollection" :key="expense.id" :expense="expense" :expenseIteration="iter" :expand="expense.expand" :settings="settings" />
+      <Expense v-for="(expense, iter) in expenseCollection" :key="expense.id" :expense="expense" :expenseIteration="iter" :expand="expense.expand" />
     </div>
     <div class="neBut bs-add" @click="addExpense"></div>
   </div>
@@ -50,14 +50,14 @@
   } from "vuex";
   import Expense from "@/components/Expense.vue";
   import router from "@/router";
+  import fb from "@/firebaseConfig";
   import {
     setTimeout
   } from 'timers';
   export default {
     name: "ExpenseListing",
-    props: ["settings"],
     computed: {
-      ...mapState(["isAdmin"])
+      ...mapState(["isAdmin", "settings" , "personCollection"])
     },
     components: {
       Expense
@@ -72,28 +72,30 @@
     },
     methods: {
       initExpenses() {
-        // fb.expenseCollection
-        //   .orderBy("createdOn", "desc")
-        //   .onSnapshot(querySnapshot => {
-        //     // console.log(querySnapshot)
-        //     var expenseCollection = [];
-        //     querySnapshot.forEach(doc => {
-        //       let expense = doc.data();
-        //       expense.id = doc.id;
-        // expense.expand=false
-        //       expenseCollection.push(expense);
-        //     });
-        //     this.expenseCollection = expenseCollection;
-        //   });
-        this.expenseCollection=[{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc1",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P1"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P2"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P3"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P4"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P5"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P6"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P7"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P8"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P9"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P11"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P12"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P13"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P14"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P15"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P16"},{cost:100,expand:!1,createdOn:{seconds:1551761944,nanoseconds:567e6},date:"22/08/2019",name:"B1",persons:{Hk8MhHaVI4mmgZCFzNOc:{cost:45,id:"Hk8MhHaVI4mmgZCFzNOc",name:"Hari 3",omitSplit:!1},XO1WQUh6mE3ALI9bhfYF:{cost:45,id:"XO1WQUh6mE3ALI9bhfYF",name:"Hari 2",omitSplit:!1},c1EWlrtEXQURuYc6XNvi:{cost:10,id:"c1EWlrtEXQURuYc6XNvi",name:"Hari",omitSplit:!0}},id:"JUKFvvgzQ19QX6xFCj9P17"}];
+        fb.expenseCollection
+          .orderBy("createdOn", "desc")
+          .onSnapshot(querySnapshot => {
+            // console.log(querySnapshot)
+            var expenseCollection = [];
+            querySnapshot.forEach(doc => {
+              let expense = doc.data();
+              expense.id = doc.id;
+              expense.expand = false
+              expenseCollection.push(expense);
+            });
+            this.expenseCollection = expenseCollection;
+          });
+        // this.expenseCollection=[{"cost":100,"createdOn":{"seconds":1551878159,"nanoseconds":305000000},"date":null,"id":"kCdK1o1Ap4eu5o0c14M8","name":"11","persons":{"XO1WQUh6mE3ALI9bhfYF":{"cost":50,"id":"XO1WQUh6mE3ALI9bhfYF","name":"Hari 2","omitSplit":false},"c1EWlrtEXQURuYc6XNvi":{"cost":50,"id":"c1EWlrtEXQURuYc6XNvi","name":"Hari","omitSplit":false}},"expand":false},{"cost":100,"createdOn":{"seconds":1551761944,"nanoseconds":567000000},"date":null,"name":"B1","persons":{"Hk8MhHaVI4mmgZCFzNOc":{"cost":45,"id":"Hk8MhHaVI4mmgZCFzNOc","name":"Hari 3","omitSplit":false},"XO1WQUh6mE3ALI9bhfYF":{"cost":45,"id":"XO1WQUh6mE3ALI9bhfYF","name":"Hari 2","omitSplit":false},"c1EWlrtEXQURuYc6XNvi":{"cost":10,"id":"c1EWlrtEXQURuYc6XNvi","name":"Hari","omitSplit":true}},"id":"JUKFvvgzQ19QX6xFCj9P","expand":false}]
         // this.$store.commit("setexpenseCollection", this.expenseCollection);
+        // this.$parent.hideLoading();
       },
       expandExpense() {
         if (this.expenseCollection && this.expenseCollection[0].id !== "new") {
           if (this.$route.query.expense && this.$route.query.expense === "new") {
             var tempCollection = [{
               id: "new",
-              expand: false
+              expand: false,
+              persons: {}
             }];
             this.expenseCollection.forEach(exp => {
               tempCollection.push(exp)
@@ -138,11 +140,20 @@
         }
       },
       pushRouter(id) {
+        let query = Object.assign({}, this.$route.query);
+        query.expense = id;
         router.push({
-          query: {
-            expense: id
-          }
+          query: query
         });
+      },
+      resetPreview(callback) {
+        for (var i = 0; i < this.personCollection.length; i++) {
+          this.personCollection[i].modified = false;
+        }
+        this.$store.commit("setPersonCollection", this.personCollection);
+        if (callback) {
+          callback();
+        }
       }
     },
     watch: {
