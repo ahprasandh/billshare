@@ -2,9 +2,13 @@
   <div class="logC" @mousemove="mouseOver($event)">
     <div class="logW">
       <div class="logLogo">
+  
+        <div class="logTit">
+          <div>Expense Share</div>
+        </div>
         <div class="logLogoW">
           <div id="logLogoDiv" class="logLogoDiv">
-            <img src="../assets/logo.png" v-bind:style="{ transform:'perspective(100px) rotateX('+xTransform+'deg) rotateY('+yTransform+'deg) scale3d('+scale+','+scale+','+scale+')' }" />
+            <img src="../assets/logo.svg" v-bind:style="{ transform:'perspective(100px) rotateX('+xTransform+'deg) rotateY('+yTransform+'deg) scale3d('+scale+','+scale+','+scale+')' }" />
           </div>
         </div>
       </div>
@@ -47,11 +51,23 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    background: #9053c7;
-    background: -webkit-linear-gradient(-135deg, #c850c0, #4158d0);
-    background: -o-linear-gradient(-135deg, #c850c0, #4158d0);
-    background: -moz-linear-gradient(-135deg, #c850c0, #4158d0);
-    background: linear-gradient(-135deg, #c850c0, #4158d0);
+    background: #311b92;
+    background: linear-gradient(135deg, #311b92, #303F9F, #3F51B5, #5C6BC0);
+  }
+  
+  .logTit {
+    display: table-row;
+    font-size: 50px;
+    height: fit-content;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+  }
+  
+  .logTit div {
+    height: fit-content;
+    padding-top: 50px;
+    color: #2e1395;
   }
   
   .logW {
@@ -69,7 +85,6 @@
     -ms-flex-pack: justify;
     justify-content: space-between;
     margin: 12.5vh 12.5vw;
-    /* padding: 12.5vh 12.5vw; */
     position: relative;
   }
   
@@ -110,10 +125,10 @@
     width: 50%;
     height: 100%;
     position: relative;
-    /* background: url(https://raw.githubusercontent.com/khadkamhn/day-01-login-form/master/img/bg.jpg) no-repeat center; */
+    background: #2e1395;
     background: url("../assets/login.png") no-repeat center;
     background-size: cover;
-    box-shadow: 0 12px 15px 0 rgba(0, 0, 0, .24), 0 17px 50px 0 rgba(0, 0, 0, .19);
+    box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
   }
   
   .logFC {
@@ -121,7 +136,7 @@
     height: calc(100% - 140px);
     position: relative;
     padding: 90px 70px 50px 70px;
-    background: rgba(40, 57, 101, .9);
+    background: rgba(40, 57, 101, 0.9);
   }
   
   .logFT {
@@ -141,7 +156,7 @@
     border: none;
     padding: 10px 20px;
     border-radius: 25px;
-    background: rgba(255, 255, 255, .1);
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
     font-size: 20px;
     width: calc(100% - 40px);
@@ -150,7 +165,7 @@
   
   .logFILab {
     color: #aaa;
-    font: 600 12px/10px 'Open Sans', sans-serif;
+    font: 600 12px/10px "Open Sans", sans-serif;
     text-transform: uppercase;
     box-sizing: border-box;
   }
@@ -181,7 +196,7 @@
   }
   
   .logFsG:hover {
-    color: #fff
+    color: #fff;
   }
   
   .logErr {
@@ -198,7 +213,7 @@
 <script>
   import firebase from "firebase/app";
   import "firebase/auth";
-  import FullLoading from "@/components/FullLoading.vue"
+  import FullLoading from "@/components/FullLoading.vue";
   export default {
     name: "login",
     components: {
@@ -222,12 +237,12 @@
         var y = event.pageX / this.height;
         var x = event.pageY / this.width;
         var scaleRatio = 10;
-        this.xTransform = (scaleRatio * (x - 0.5));
+        this.xTransform = scaleRatio * (x - 0.5);
         this.yTransform = -(scaleRatio * (y - 0.5));
-        this.scale = 1.5;
+        this.scale = 1.1;
       },
       login() {
-        this.loginToFB(this.email, this.password)
+        this.loginToFB(this.email, this.password);
       },
       loginToFB: function(email, password, errCallback) {
         this.loading = true;
@@ -250,7 +265,7 @@
           );
       },
       loginAsGuest: function() {
-        this.loginToFB("guest@domain.com", "guest@123", this.createGues)
+        this.loginToFB("guest@domain.com", "guest@123", this.createGues);
       },
       createGuest() {
         firebase
@@ -258,7 +273,7 @@
           .createUserWithEmailAndPassword("guest@domain.com", "guest@123")
           .then(
             () => {
-              this.loginAsGuest()
+              this.loginAsGuest();
             },
             err => {
               this.error = err.message;

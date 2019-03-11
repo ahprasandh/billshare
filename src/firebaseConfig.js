@@ -12,11 +12,15 @@ const currentUser = auth.currentUser;
 // firebase collections
 const personCollection = db.collection("persons");
 const expenseCollection = db.collection("expenses");
+const settings = db.collection("settings");
+const photos = db.collection("photos");
 
 export default {
   db,
   auth,
   currentUser,
   personCollection,
-  expenseCollection
+  expenseCollection,
+  settings,
+  photos
 };

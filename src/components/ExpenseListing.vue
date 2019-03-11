@@ -22,7 +22,7 @@
   }
   
   .neBut {
-    background: #ff4081;
+    background:var(--soft);
     position: absolute;
     right: 10px;
     bottom: 10px;

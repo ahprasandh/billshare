@@ -229,9 +229,10 @@
     position: absolute;
     top: 1em;
     right: 1em;
-    color: #3360ff;
+    color: var(--hard);
     font-size: 1.2em;
   }
+  
   
   .addPerEdit {
     position: absolute;
@@ -350,10 +351,11 @@
     cursor: pointer;
     margin: auto;
     border-radius: 0.2em;
-    background: #5e2fb4;
+    background: var(--hard);
     color: #fff;
     padding: 0.4em 1em 0.2em 1em;
     text-transform: uppercase;
+    font-weight:var(--fontbold)
   }
   
   .apCon .cBut {
@@ -362,5 +364,8 @@
     top: 0.2em;
     right: 0.2em;
     cursor: pointer;
+  }
+  .apCon .cBut:hover{
+    color: var(--hard)
   }
 </style>

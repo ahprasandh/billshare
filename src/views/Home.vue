@@ -1,18 +1,21 @@
 <template>
-  <div class="home">
-    <div class="tb">
+  <div class="home" v-bind:style="{ 'font-family':settings.cursiveFont?'Hari':'sans-serif'}">
+    <div class="tb" v-bind:class="[settings.theme]">
       <div class="tbT">
         <div class="pT" v-if="date" v-text="getTitle"></div>
       </div>
       <div class="tbB">
-        <div class="pN">
-           <div><i title="Settings" class="bs-settings" /></div>
-           <div><i title="My Account" class="bs-user"></i>{{ currentUser.displayName }}</div>
-          <div title="Logout" class="lo" @click="logout"><i class="bs-logout"></i></div>
+        <div class="pN" @mouseleave="show.settings=false">
+          <div class="pNTI" @click.stop="show.settings=true" >
+            <i title="Settings" class="bs-settings" ></i>
+            <Settings v-show="show.settings"></Settings>
+          </div>
+          <div class="pNTI"><i title="My Account" class="bs-user"></i>{{ currentUser.displayName }}</div>
+          <div class="pNTI" title="Logout" @click="logout"><i class="bs-logout"></i></div>
         </div>
       </div>
     </div>
-    <div v-show="!show.loading" class="cW">
+    <div v-show="!show.loading" class="cW" v-bind:class="[settings.theme]">
       <PersonListing class="uW" />
       <ExpenseListing class="eW" />
     </div>
@@ -30,6 +33,7 @@
   import PersonListing from "@/components/PersonListing.vue";
   import ExpenseListing from "@/components/ExpenseListing.vue";
   import FullLoading from "@/components/FullLoading.vue"
+  import Settings from "@/components/Settings.vue"
   
   export default {
     name: "home",
@@ -47,7 +51,8 @@
     components: {
       PersonListing,
       ExpenseListing,
-      FullLoading
+      FullLoading,
+      Settings
     },
     mounted() {
       this.init();
@@ -57,7 +62,8 @@
         date: null,
         personCollection: [],
         show: {
-          loading: true
+          loading: true,
+          settings:false
         }
       };
     },
@@ -74,8 +80,10 @@
           show: {
             help: false
           },
+          theme: "themedark",
           expenseMonth: this.date.getFullYear() + "" + this.getMonth(this.date.getMonth() - 1),
-          currency: "₹"
+          currency: "₹",
+          cursiveFont:true
         }
         this.$store.commit("saveSettings", settings)
         // this.initExpenses();
@@ -111,8 +119,8 @@
   .home {
     height: 100%;
     width: 100%;
-    font-family: Hari;
-    color: #2c3e50;
+    font-family: var(--fontfamily);
+    color: var(--textcolor);
     overflow: hidden;
   }
   
@@ -120,20 +128,20 @@
     width: 100%;
     height: 6em;
     color: #fff;
-    overflow: hidden;
-    background: #5E34B0;
+    overflow: visible;
+    background: var(--soft);
   }
   
   .tbT {
     height: calc(100% - 2.1em);
-    background: #5E34B0;
+    background: transparent;
     overflow: hidden;
   }
   
   .tbB {
     height: 2.1em;
-    background: #45239E;
-    overflow: hidden;
+    background: var(--hard);
+    overflow: visible;
   }
   
   .tbT img {
@@ -145,22 +153,21 @@
   }
   
   .pN {
-    float: right;
+    position: absolute;
     margin-right: 0.6em;
     cursor: pointer;
+    right: 0;
   }
   
-  .pN div {
+  .pNTI {
     float: left;
     margin-left: 0.6em;
     padding-top: 0.3em;
     height: 2em;
-    overflow: hidden;
+    overflow: visible;
     font-size: 23px;
-    letter-spacing: 5px;
-}
-  
-
+    position: relative;
+  }
   
   .pN i {
     margin-right: 0.5em;
@@ -191,7 +198,7 @@
     box-shadow: 0em 0em 0.6em 0.6em rgba(202, 202, 202, 0.34);
     background: #fff;
     float: left;
-    margin:3vw 1vw;
+    margin: 3vw 1vw;
     width: 33vw;
     background: #f5f5f5;
   }

@@ -237,7 +237,6 @@
         this.name = this.expense.name
         this.cost = this.expense.cost
         this.date = this.expense.date
-        var avpCopy = JSON.parse(JSON.stringify(this.availablePersons))
         var i = this.availablePersons.length
         while (i--) {
           if (this.expense.persons[this.availablePersons[i].id]) {
@@ -819,7 +818,7 @@
   
   .butPB,
   .butSB {
-    background: #5e2fb4;
+    background: var(--hard);
     padding: 0.6em;
     text-align: center;
     border-radius: 0.24em;
@@ -830,12 +829,13 @@
     font-size: 0.72em!important;
     cursor: pointer;
     box-shadow: 0em 0.06em 0.3em 0.12em rgba(103, 58, 183, 0.5);
+    font-weight: var(--fontbold)
   }
   
   .butSB {
     right: 7.8em;
     background: #fff;
-    color: #5e2fb4;
+    color: var(--hard);
     box-shadow: unset;
   }
   
