@@ -1,5 +1,5 @@
 <template>
-  <div class="home" v-bind:style="{ 'font-family':settings.cursiveFont?'Hari':'sans-serif'}">
+  <div v-if="render" class="home" v-bind:style="{ 'font-family':settings.cursiveFont?'Hari':'sans-serif'}">
     <div class="tb" v-bind:class="[settings.theme]">
       <div class="tbT">
         <div class="pT" v-if="date" v-text="getTitle"></div>
@@ -23,6 +23,7 @@
       <FullLoading message="Wait while We prepare your Expenses..." />
     </div>
   </div>
+  <FullLoading v-else :message="getLoadingMessage" />
 </template>
 
 <script>
@@ -46,6 +47,9 @@
           this.date.getFullYear() +
           " Expense"
         );
+      },
+      getLoadingMessage() {
+        return "Hi " + this.currentUser.displayName + ", Loading your App";
       }
     },
     components: {
@@ -64,7 +68,8 @@
         show: {
           loading: true,
           settings:false
-        }
+        },
+        render:false
       };
     },
     methods: {
@@ -76,17 +81,52 @@
       },
       init() {
         this.date = new Date();
-        var settings = {
-          show: {
-            help: false
-          },
-          theme: "themedark",
-          expenseMonth: this.date.getFullYear() + "" + this.getMonth(this.date.getMonth() - 1),
-          currency: "₹",
-          cursiveFont:true
+        fb.settings.get().then(this.initSettings)
+      },
+       initSettings(data) {
+        var settings = null;
+        if (data.exists) {
+          settings = data.data();
+        } else {
+          settings = {
+            show: {
+              help: true,
+              showExpenseMonth: true,
+              guestImage: true
+            },
+            theme: "themeblue",
+            currency: "₹",
+            cursiveFont: true
+          }
+          fb.settings.set(settings, {
+            merge: true
+          });
         }
-        this.$store.commit("saveSettings", settings)
-        // this.initExpenses();
+        this.$store.commit("saveSettings", settings);
+        this.render = true;
+        this.initPhotos()
+      },
+      initPhotos() {
+        var _this = this
+        fb.photos.onSnapshot(querySnapshot => {
+          var photoCollection = []
+          querySnapshot.forEach(doc => {
+            photoCollection.push({
+              data: doc.data().data,
+              id: doc.id
+            })
+            if (photoCollection.length === querySnapshot.size) {
+              _this.commitToStore(photoCollection)
+            }
+          });
+        });
+      },
+      commitToStore(photoArray) {
+        var photos = {};
+        for (var i = -0; i < photoArray.length; i++) {
+          photos[photoArray[i].id] = photoArray[i].data
+        }
+        this.$store.commit("savePhotos", photos);
       },
       hideLoading() {
         this.show.loading = false
@@ -201,10 +241,10 @@
     margin: 3vw 1vw;
     width: 33vw;
     background: #f5f5f5;
+    height: calc(100% - 6em);
   }
   
   .eW {
-    height: calc(100% - 6em);
     background: #f5f5f5;
     width: 60vw;
     max-width: unset;

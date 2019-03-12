@@ -9,39 +9,45 @@
                     <div class="setT">Theme</div>
                     <div id="themeLister" class="iW">
                          <label class="container">Pink
-                              <input type="radio" checked="checked" name="theme" v-model="settings.theme" value="themepink">
-                              <span class="checkmark"></span>
-                              </label>
+                                   <input type="radio" checked="checked" name="theme" v-model="settings.theme" value="themepink">
+                                   <span class="checkmark"></span>
+                                   </label>
                          <label class="container">Red
-                              <input type="radio" name="theme" v-model="settings.theme" value="themered">
-                              <span class="checkmark"></span>
-                              </label>
+                                   <input type="radio" name="theme" v-model="settings.theme" value="themered">
+                                   <span class="checkmark"></span>
+                                   </label>
                          <label class="container">Blue
-                              <input type="radio" name="theme" v-model="settings.theme" value="themeblue">
-                              <span class="checkmark"></span>
-                              </label>
+                                   <input type="radio" name="theme" v-model="settings.theme" value="themeblue">
+                                   <span class="checkmark"></span>
+                                   </label>
                          <label class="container">Purple
-                              <input type="radio" name="theme" v-model="settings.theme" value="themepurple">
-                              <span class="checkmark"></span>
-                              </label>
+                                   <input type="radio" name="theme" v-model="settings.theme" value="themepurple">
+                                   <span class="checkmark"></span>
+                                   </label>
                          <label class="container">Light Blue
-                              <input type="radio" name="theme" v-model="settings.theme" value="themelightblue">
-                              <span class="checkmark"></span>
-                              </label>
+                                   <input type="radio" name="theme" v-model="settings.theme" value="themelightblue">
+                                   <span class="checkmark"></span>
+                                   </label>
                          <label class="container">Green
-                              <input type="radio" name="theme" v-model="settings.theme" value="themegreen">
-                              <span class="checkmark"></span>
-                              </label>
+                                   <input type="radio" name="theme" v-model="settings.theme" value="themegreen">
+                                   <span class="checkmark"></span>
+                                   </label>
                          <label class="container">Dark
-                              <input type="radio" name="theme" v-model="settings.theme" value="themedark">
-                              <span class="checkmark"></span>
-                              </label>
+                                   <input type="radio" name="theme" v-model="settings.theme" value="themedark">
+                                   <span class="checkmark"></span>
+                                   </label>
                     </div>
                </div>
                <div class="pSettingsDiv">
                     <div class="setT">Cursive Font</div>
                     <div class="iW"> <label class="switch"> <input type="checkbox" class="icB" v-model="settings.cursiveFont"> <span class="slider round"></span> </label></div>
                </div>
+               <div class="pSettingsDiv">
+                    <div class="setT">Guest Image</div>
+                    <div class="iW"> <label class="switch"> <input type="checkbox" class="icB" v-model="settings.show.guestImage"> <span class="slider round"></span> </label></div>
+               </div>
+               <div v-if="isAdmin" class="pSettingsS">Save</div>
+               <div v-if="isAdmin" class="apButW" @click.stop="save"><span class="apBut">Save</span></div>
           </div>
      </div>
 </template>
@@ -50,9 +56,17 @@
      import {
           mapState
      } from "vuex";
+     import fb from "@/firebaseConfig";
      export default {
           computed: {
                ...mapState(["isAdmin", "settings"]),
+          },
+          methods: {
+               save() {
+                    fb.settings.set(this.settings, {
+                         merge: true
+                    });
+               }
           }
      };
 </script>
@@ -124,7 +138,6 @@
      input:checked+.slider {
           background-color: var(--soft);
      }
-
      
      input:checked+.slider:before {
           -webkit-transform: translateX(24px);
@@ -240,6 +253,12 @@
      
      #themeLister .container:nth-child(8) .checkmark {
           background: linear-gradient(90deg, #c850c0, #4158d0);
+     }
+     
+     .pSettingsS {
+          text-align: center;
+          color: var(--soft);
+          margin: 1em;
      }
 </style>
 

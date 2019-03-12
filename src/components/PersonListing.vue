@@ -16,8 +16,8 @@
         <div class="avatar-upload">
           <div class="avatar-edit">
             <label class="bs-edit">
-              <input id="imgUpload" @change="photoChanged" type='file' accept=".png, .jpg, .jpeg" />
-              </label>
+                      <input id="imgUpload" @change="photoChanged" type='file' accept=".png, .jpg, .jpeg" />
+                      </label>
           </div>
           <div class="avatar-preview">
             <img v-if="editor.photo" :src="editor.photo" />
@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-    <div v-if="isAdmin" class="addPerTrig" @click="showEditor('new',null,null,'Add Person')">+ New</div>
+    <div v-if="isAdmin" class="addPerTrig" @click="showEditor('new',null,null,'Add Person')">+ Person</div>
   </div>
 </template>
 
@@ -58,7 +58,8 @@
         editor: {
           id: null,
           name: '',
-          photo: null
+          photo: null,
+          expenses:{},
         },
         error: null
       }
@@ -68,7 +69,7 @@
     },
     methods: {
       initPersons() {
-        this.show.editor=false;
+        this.show.editor = false;
         var _this = this
         fb.personCollection.orderBy("name", "asc").onSnapshot(querySnapshot => {
           var personCollection = []
@@ -134,8 +135,7 @@
           var person = {
             createdOn: new Date(),
             name: this.editor.name,
-            photo: this.editor.photo,
-            expenses: this.editor.expenses,
+            expenses: this.editor.expenses?this.editor.expenses:{},
             paid: this.editor.payment.balPayRequired === 0,
             payment: this.editor.payment
           };
@@ -144,8 +144,7 @@
             fb.personCollection
               .add(person)
               .then(ref => {
-                _this.closeEditor();
-                _this.initPersons();
+                _this.personAdded(ref.id);
               })
               .catch(err => {
                 _this.closeEditor();
@@ -158,19 +157,40 @@
                 merge: true
               })
               .then(function() {
-                _this.closeEditor();
-                _this.initPersons();
+                console.log('hhh')
+                _this.personAdded(_this.editor.id);
               })
               .catch(function(error) {
                 _this.closeEditor();
                 _this.showError("Something Went Wrong");
               });
           }
-  
           console.log(person)
         } else {
           this.showError("Name Cannot be Empty")
         }
+      },
+      personAdded(id) {
+        console.log("aaaaaa",id);
+        var _this = this;
+        if (this.editor.photo) {
+          fb.photos
+            .doc(id)
+            .set({
+              data: this.editor.photo
+            })
+            .then(this.closeEditorAndInit)
+            .catch(function(error) {
+              _this.closeEditor();
+              _this.showError("Something Went Wrong");
+            });
+        } else {
+          this.closeEditorAndInit()
+        }
+      },
+      closeEditorAndInit() {
+        this.closeEditor();
+        this.initPersons();
       },
       showError(message) {
         this.error = message;
@@ -185,10 +205,10 @@
           var reader = new FileReader();
           var _this = this
           reader.onload = function(e) {
-            if(Math.ceil(e.total/1024)<500){
+            if (Math.ceil(e.total / 1024) < 25) {
               _this.editor.photo = e.currentTarget.result;
-            }else{
-              _this.showError("File Size should be less than 500 Kb")
+            } else {
+              _this.showError("File Size should be less than 25 Kb")
             }
           }
           reader.readAsDataURL(input.files[0]);
@@ -208,8 +228,8 @@
         this.editor.id = null;
         this.editor.photo = null;
       },
-      editPerson(person) {
-        this.showEditor(person.id, person.name, person.photo, "Edit Person", person.payment, person.expenses)
+      editPerson(person,photo) {
+        this.showEditor(person.id, person.name, photo, "Edit Person", person.payment, person.expenses)
       }
     },
     watch: {
@@ -232,7 +252,6 @@
     color: var(--hard);
     font-size: 1.2em;
   }
-  
   
   .addPerEdit {
     position: absolute;
@@ -355,7 +374,7 @@
     color: #fff;
     padding: 0.4em 1em 0.2em 1em;
     text-transform: uppercase;
-    font-weight:var(--fontbold)
+    font-weight: var(--fontbold)
   }
   
   .apCon .cBut {
@@ -365,7 +384,8 @@
     right: 0.2em;
     cursor: pointer;
   }
-  .apCon .cBut:hover{
+  
+  .apCon .cBut:hover {
     color: var(--hard)
   }
 </style>

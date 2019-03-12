@@ -11,7 +11,8 @@ const store = new Vuex.Store({
     isAdmin: false,
     personCollection:[],
     expenseCollection:[],
-    settings:{}
+    settings:{},
+    photos:{}
   },
   mutations: {
     setCurrentUser(state, user) {
@@ -26,6 +27,9 @@ const store = new Vuex.Store({
     },
     saveSettings(state,settings){
       state.settings=settings
+    },
+    savePhotos(state,photos){
+      state.photos=photos
     }
   },
   actions: {}

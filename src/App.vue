@@ -5,14 +5,13 @@
 </template>
 
 <script>
+  import {
+    mapState
+  } from "vuex";
+  import fb from "@/firebaseConfig";
+  import FullLoading from "@/components/FullLoading.vue"
   export default {
-    name: "app",
-    mounted() {
-      this.init();
-    },
-    methods: {
-      init: function() {}
-    }
+    name: "App"
   };
 </script>
 
@@ -190,15 +189,36 @@
     width: 100%;
   }
   
-  .pPic {
-    height: 1.5em;
-    width: 1.5em;
-    border: 0.06em solid #dedede;
-    border-radius: 1.2em;
-    margin: 0.3em!important;
-    padding: 0em!important;
-    max-width: calc(100% - 0.6em)!important;
-    max-height: calc(100% - 0.6em)!important;
+   ::-webkit-scrollbar {
+    width: 0px;
+    /* remove scrollbar space */
+    background: transparent;
+    /* optional: just make scrollbar invisible */
+  }
+  
+  
+  /* optional: show position indicator in red */
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--hard);
+  }
+  
+  .pMt {
+    padding: 0!important;
+    margin: -0.6em 0.5em!important;
+    height: 2em;
+  }
+  
+  .pMt span {
+    background: url(./assets/guest.svg) no-repeat center;
+    font-weight: var(--fontbold);
+    color: #fff;
+    border-radius: 5em;
+    padding: 0.4em 0.3em 0.2em 0.3em;
+    background-size: cover!important;
+    min-height: 1em;
+    min-width: 1em;
+    display: block;
   }
   
   .pName {
@@ -358,9 +378,9 @@
     --soft: #7B1FA2;
     --hard: #6A1B9A;
     --normal: 20px;
-    --textcolor:#2c3e50;
-    --fontfamily:Hari;
-    --fontbold:600
+    --textcolor: #2c3e50;
+    --fontfamily: Hari;
+    --fontbold: 600
   }
   
   .themepink {

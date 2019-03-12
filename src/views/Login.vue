@@ -251,6 +251,7 @@
           .signInWithEmailAndPassword(email, password)
           .then(
             user => {
+              console.log(user)
               this.$router.replace("home");
               this.$store.commit("setCurrentUser", user);
             },

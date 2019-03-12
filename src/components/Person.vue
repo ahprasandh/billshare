@@ -2,34 +2,38 @@
   <div :id="'person_' + person.id" class="perC">
     <div class="perW" v-bind:class="{ expanded: expand }">
       <div class="perHead" v-bind:class="{ expanded: expand }" @click="expandPerson()">
-        <div>
-          <img v-if="photo" class="pPic" :src="person.photo" />
-          <img v-else class="pPic" src="../assets/guest.svg" />
-        </div>
-        <div class="perName" v-text="name">
-        </div>
-        <div class="perDelIi" v-if="isAdmin" v-bind:class="{ modified: modified}" @mouseleave="show.options = false">
-          <i v-show="!show.options" title="More Options" class="bs-more" @click.stop="show.options = true"></i>
-          <span class="icWra" v-if="show.options">
-                <span class="iconHolder">
-                  <i title="Edit Person" class="bs-edit" @click.stop="$parent.editPerson(person)"></i>
-                  <i title="Record Payment" v-bind:class="{pPaid:paid}" class="bs-wallet" @click.stop="paid=!paid"></i>
-                  <i title="Move to trash" class="bs-delete"></i>
-                </span>
-          </span>
-        </div>
-        <div v-if="!expand && !modified" v-bind:class="{pPaid:paid}">
-          <span class="currency" v-text="settings.currency"></span>
-          <span v-text="Math.ceil(balPayRequired)"></span>
-        </div>
-        <div class="peModI" v-if="!expand && modified">
-          <span class="currency" v-text="settings.currency"></span>
-          <span v-text="Math.ceil(modifyBalPay)"></span>
-          <i v-bind:class="{ 'bs-arrow-up': modifyMode === 'add','bs-arrow-down': modifyMode !== 'add' }"></i>
-          <i class="bs-preview" />
-          <span class="previewSplit" v-bind:class="{'modAdd':modified && modifyMode === 'add','modSub':modified && modifyMode !== 'add'}">
-              <span v-text="'( '+ Math.ceil(person.payment.balPayRequired) +' ' +(modifyMode === 'add' ? '+' : '-') +' ' +Math.ceil(modifyCost)+' )'"></span>
-          </span>
+        <div class="perHeadW">
+          
+          <div class="pMt">
+            <span v-if="photos[person.id]" v-bind:style="{background:'url('+photos[person.id]+') no-repeat center'}" />
+            <span v-else-if="settings.show.guestImage" />
+            <span v-else v-bind:style="{background:'var(--soft)'}" v-text="'Ha'"></span>
+          </div>
+          <div class="perName" v-text="name">
+          </div>
+          <div class="perDelIi" v-if="isAdmin" v-bind:class="{ modified: modified}" @mouseleave="show.options = false">
+            <i v-show="!show.options" title="More Options" class="bs-more" @click.stop="show.options = true"></i>
+            <span class="icWra" v-if="show.options">
+              <span class="iconHolder">
+                <i title="Edit Person" class="bs-edit" @click.stop="$parent.editPerson(person,photos[person.id])"></i>
+                <i title="Record Payment" v-bind:class="{pPaid:paid}" class="bs-wallet" @click.stop="paid=!paid"></i>
+                <i title="Move to trash" class="bs-delete" @click="deletePeople(person.id)"></i>
+              </span>
+            </span>
+          </div>
+          <div v-if="!expand && !modified" v-bind:class="{pPaid:paid}">
+            <span class="currency" v-text="settings.currency"></span>
+            <span v-text="Math.ceil(balPayRequired)"></span>
+          </div>
+          <div class="peModI" v-if="!expand && modified">
+            <span class="currency" v-text="settings.currency"></span>
+            <span v-text="Math.ceil(modifyBalPay)"></span>
+            <i v-bind:class="{ 'bs-arrow-up': modifyMode === 'add','bs-arrow-down': modifyMode !== 'add' }"></i>
+            <i class="bs-preview" />
+            <span class="previewSplit" v-bind:class="{'modAdd':modified && modifyMode === 'add','modSub':modified && modifyMode !== 'add'}">
+                    <span v-text="'( '+ Math.ceil(person.payment.balPayRequired) +' ' +(modifyMode === 'add' ? '+' : '-') +' ' +Math.ceil(modifyCost)+' )'"></span>
+            </span>
+          </div>
         </div>
       </div>
       <div class="perCon" v-if="mode === 'view'" v-bind:class="{ expanded: expand }">
@@ -45,6 +49,16 @@
               </div>
             </div>
           </div>
+          <div class="perEx" v-if="modified && person.modify.id==='new'">
+            <div class="peExCRight" @click.stop="openExpense('new')" v-bind:class="{'modAdd':true}">
+              <div v-text="person.modify.name">
+              </div>
+              <div class="m45">
+                <span class="currency" v-text="settings.currency"></span>
+                <span v-text="Math.ceil(modifyCost)"></span>
+              </div>
+            </div>
+          </div>
           <div v-if="modified && person.modify.id!=='new' && !person.expenses[person.modify.id]" class="perEx">
             <div class="peExCRight modAdd" @click.stop="openExpense(person.modify.id)">
               <div v-text="modifyName">
@@ -57,16 +71,16 @@
           </div>
         </div>
       </div>
-      <div class="pTot">
+      <div class="pTot" v-bind:class="{ expanded: expand }">
         <div>Total</div>
         <div v-bind:class="{pPaid:paid && !modified,  'modAdd':modified && modifyMode === 'add','modSub':modified && modifyMode !== 'add'}">
           <span v-if="modified" class="bs-preview" />
           <span class="currency" v-text="settings.currency"></span>
           <span v-if="!modified" v-text="Math.ceil(balPayRequired)" />
           <span v-if="modified">
-                {{Math.ceil(modifyBalPay)+' ( '+ Math.ceil(person.payment.balPayRequired) +' ' +(modifyMode === 'add' ? '+' : '-') +' ' +Math.ceil(modifyCost)+' )'}}
-                <i v-if="modified" v-bind:class="{ 'bs-arrow-up': modifyMode === 'add','bs-arrow-down': modifyMode !== 'add' }" />
-            </span>
+              {{Math.ceil(modifyBalPay)+' ( '+ Math.ceil(person.payment.balPayRequired) +' ' +(modifyMode === 'add' ? '+' : '-') +' ' +Math.ceil(modifyCost)+' )'}}
+              <i v-if="modified" v-bind:class="{ 'bs-arrow-up': modifyMode === 'add','bs-arrow-down': modifyMode !== 'add' }" />
+          </span>
   
         </div>
       </div>
@@ -87,7 +101,6 @@
   .perW {
     max-height: 3em;
     transition: max-height 0.25s ease-out;
-    overflow: hidden;
   }
   
   .perW.expanded {
@@ -98,13 +111,25 @@
   .perHead {
     font-size: 1.2em;
     cursor: pointer;
-    overflow: hidden;
+    height: 2em;
   }
   
-  .perHead div {
-    float: left;
-    padding-top: 1em;
+  .perHeadW {
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
   }
+  
+  .perHeadW div {
+    float: left;
+    margin:0em 0 0 0.5em;
+    padding-top: 0.1em;
+  }
+  
+
+  
   
   .perName {
     max-width: 5em;
@@ -113,22 +138,17 @@
     white-space: nowrap;
   }
   
-  .perHead div:first-of-type {
-    padding: 0;
-  }
   
-  .perHead div:last-of-type {
+  
+  .perHeadW div:last-of-type {
     float: right;
     margin-right: 1.2em;
     max-width: 10em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   
   .perDelIi {
     opacity: 0;
-    margin: -0.1em 0 0 0.5em;
+    margin-top: -0.1em!important;
   }
   
   .perDelIi span i {
@@ -144,8 +164,8 @@
     display: none!important;
   }
   
-  .perHead:hover .perDelIi,
-  .perHead.expanded .perDelIi {
+  .perHead:hover .perHeadW .perDelIi,
+  .perHead.expanded .perHeadW .perDelIi {
     color: #ccc;
     opacity: 1;
   }
@@ -195,6 +215,7 @@
   
   .perHead.expanded {
     border-bottom: 0.06em solid #eaeaea;
+    padding-bottom: 0.4em;
   }
   
   .peModI {
@@ -217,7 +238,7 @@
   
   .previewSplit {
     position: absolute;
-    top: 1.8em;
+    top: 0.7em;
     right: 0.2em;
     border-radius: 2em;
     box-shadow: 1px 1px 10px 1px rgb(0, 0, 0, 0.2);
@@ -251,7 +272,7 @@
     visibility: hidden;
   }
   
-  .perCon.expanded {
+  .perCon.expanded,.pTot.expanded {
     visibility: visible;
   }
   
@@ -283,6 +304,7 @@
     margin: 0.5em 1em;
     padding-top: 1em;
     overflow: hidden;
+    visibility: hidden;
   }
   
   .pTot div {
@@ -314,7 +336,7 @@
   export default {
     name: "Person",
     computed: {
-      ...mapState(["isAdmin", "settings"])
+      ...mapState(["isAdmin", "settings", "photos"])
     },
     props: ["person", "expand", "modified", "modifyBalPay", "modifyMode", "modifyCost", "modifyName"],
     data() {
@@ -369,15 +391,15 @@
       },
   
       deletePeople(id) {
-        // fb.personCollection
-        //   .doc(id)
-        //   .delete()
-        //   .then(function() {
-        //     alert("Person successfully deleted!");
-        //   })
-        //   .catch(function(error) {
-        //     console.error("Error removing Person: ", error);
-        //   });
+        fb.personCollection
+          .doc(id)
+          .delete()
+          .then(function() {
+            alert("Person successfully deleted!");
+          })
+          .catch(function(error) {
+            console.error("Error removing Person: ", error);
+          });
       }
     }
   };

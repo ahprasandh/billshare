@@ -6,7 +6,7 @@
     <div id="expenseContainer" class="ewCon">
       <Expense v-for="(expense, iter) in expenseCollection" :key="expense.id" :expense="expense" :expenseIteration="iter" :expand="expense.expand" />
     </div>
-    <div class="neBut bs-add" @click="addExpense"></div>
+    <div v-if="isAdmin" class="neBut bs-add" @click="addExpense"></div>
   </div>
 </template>
 

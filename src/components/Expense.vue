@@ -16,9 +16,9 @@
         </div>
         <div class="eWHeadRight" v-if="mode === 'view'" v-bind:class="{ expanded: expand }">
           <span class="costHo" v-if="!expand">
-                                            <div v-text="settings.currency"/>
-                                            <span v-text="this.cost" />
-                                        </span>
+              <div v-text="settings.currency"/>
+              <span v-text="this.cost" />
+          </span>
           <span v-text="this.date" />
         </div>
         <div class="eWHeadRight" v-else-if="expand">
@@ -27,7 +27,7 @@
           <input @click.stop="noAct" v-if="mode !== 'view'" type="date" v-model="date" placeholder="Enter Date" />
         </div>
       </div>
-      <div class="exPc" v-if="mode !== 'view'" v-bind:class="{ expanded: expand }">
+      <div class="exPc" v-if="mode !== 'view' && isAdmin" v-bind:class="{ expanded: expand }">
         <div class="exHelpT" v-if="settings && settings.show.help">
           <div class="neHt">
             <span class="bs-help">Add Persons to Billed Persons to split the bill amount</span>
@@ -49,11 +49,11 @@
         <div class="exPcTab">
           <div class="exPcL">
             <div class="exPcPW" v-bind:class="{help:settings.show.help}">
-  
               <div class="exPcP" v-for="(person,i) in availablePersons" :key="person.id" v-show="person.name.toLowerCase().indexOf(search.text) != -1">
-                <div class="pCont">
-                  <img v-if="person.photo" class="pPic" :src="person.photo" />
-                  <img v-else class="pPic" src="../assets/guest.svg" />
+                <div class="pMt">
+                  <span v-if="photos[person.id]" v-bind:style="{background:'url('+photos[person.id]+') no-repeat center'}" />
+                  <span v-else-if="settings.show.guestImage" />
+                  <span v-else v-bind:style="{background:'var(--soft)'}" v-text="'Ha'"></span>
                 </div>
                 <div class="pName" v-text="person.name"></div>
                 <span class="currency" v-text="settings.currency"></span>
@@ -65,9 +65,10 @@
           <div class="exPcR">
             <div class="exPcPW" v-bind:class="{help:settings.show.help}">
               <div class="exPcP" v-for="(person, i) in selectedPersons" :key="person.id">
-                <div class="pCont">
-                  <img v-if="person.photo" class="pPic" :src="person.photo" />
-                  <img v-else class="pPic" src="../assets/guest.svg" />
+                <div class="pMt">
+                  <span v-if="photos[person.id]" v-bind:style="{background:'url('+photos[person.id]+') no-repeat center'}" />
+                  <span v-else-if="settings.show.guestImage" />
+                  <span v-else v-bind:style="{background:'var(--soft)'}" v-text="'Ha'"></span>
                 </div>
                 <div class="pName" v-text="person.name"></div>
                 <span class="currency" v-text="settings.currency"></span>
@@ -83,8 +84,13 @@
           <div class="exPeC" v-for="person in expense.persons" :key="person.id">
             <div class="exPeCRight">
               <div>
-                <img v-if="person.photo" class="pPic" :src="person.photo" />
-                <img v-else class="pPic" src="../assets/guest.svg" />
+                <!-- <img v-if="photos[person.id]" class="pPic" :src="photos[person.id]" />
+                <img v-else class="pPic" src="../assets/guest.svg" /> -->
+                <div class="pMt">
+                  <span v-if="photos[person.id]" v-bind:style="{background:'url('+photos[person.id]+') no-repeat center'}" />
+                  <span v-else-if="settings.show.guestImage" />
+                  <span v-else v-bind:style="{background:'var(--soft)'}" v-text="'Ha'"></span>
+                </div>
                 <span v-text="person.name"></span>
               </div>
               <div class="m45">
@@ -98,7 +104,7 @@
       <div class="exTot" :id="'expenseTot_' + expense.id">
         <div>Total</div>
         <div v-if="expand && mode !== 'view'" @click="addExpense" class="butPB">
-          <i class="bs-save"></i> Add Expense
+          <i class="bs-save"></i> {{mode}} Expense
         </div>
         <div v-if="expand && mode !== 'view'" @click="previewExpense" class="butSB">
           <i class="bs-preview"></i> Preview Expense
@@ -122,7 +128,7 @@
   export default {
     name: "ExpenseEditor",
     computed: {
-      ...mapState(["isAdmin", "personCollection", "settings"]),
+      ...mapState(["isAdmin", "personCollection", "settings" ,"photos"]),
       checkTemp: function() {
         return this.expense && this.expense.id.indexOf("TEMP") === 0 && this.mode == "view";
       }
@@ -655,6 +661,7 @@
     font-size: 1.2em;
     color: #6f6f6f;
     display: inline-block;
+    margin-top: 1.6em;
   }
   
   .exPeCRight {
@@ -671,7 +678,6 @@
   
   .exPeCRight div span {
     float: left;
-    padding-top: 0.6em;
   }
   
   .m45 {
@@ -773,6 +779,9 @@
     width: calc(100% - 2em);
   }
 
+  .exPcPW .pMt{
+    margin-top: -0.1em!important;
+  }
   
   .exPcPW .pName {
     padding: 0.5em 0.3em;
@@ -829,6 +838,10 @@
     font-size: 0.72em!important;
     cursor: pointer;
     box-shadow: 0em 0.06em 0.3em 0.12em rgba(103, 58, 183, 0.5);
+    font-weight: var(--fontbold)
+  }
+
+  .butPB i{
     font-weight: var(--fontbold)
   }
   

@@ -1,7 +1,7 @@
 <template>
      <div class="fsloading">
           <div class="fsM">
-               <div class="fsText"> {{message}}</div>
+               <div class="fsText"> {{showMessage}}</div>
                <div v-show="show.chrome" class="infinityChrome">
                     <div></div>
                     <div></div>
@@ -321,13 +321,19 @@
                     show: {
                          chrome: true,
                          others: false
-                    }
+                    },
+                    showMessage:''
                }
           },
           mounted() {
                if (!/Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)) {
                     this.show.chrome = false;
                     this.show.others = true;
+               }
+               if(!this.message){
+                    this.showMessage="Checking your Identity"
+               }else{
+                    this.showMessage=this.message;
                }
           }
      }
