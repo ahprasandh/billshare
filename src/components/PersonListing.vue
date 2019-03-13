@@ -41,6 +41,7 @@
   import fb from "@/firebaseConfig";
   import Person from "@/components/Person.vue";
   import router from "@/router";
+  import serverUtils from "@/serverUtils"
   export default {
     name: "PersonListing",
     components: {
@@ -70,27 +71,7 @@
     methods: {
       initPersons() {
         this.show.editor = false;
-        var _this = this
-        fb.personCollection.orderBy("name", "asc").onSnapshot(querySnapshot => {
-          var personCollection = []
-          querySnapshot.forEach(doc => {
-            let person = doc.data();
-            person.id = doc.id;
-            person.modified = false;
-            person.expand = false;
-            person.modify = {
-              name: null,
-              cost: 0,
-              toPay: 0,
-              mode: null,
-            }
-            personCollection.push(person);
-            if (personCollection.length === querySnapshot.size) {
-              _this.commitToStore(personCollection)
-            }
-          });
-        });
-  
+        serverUtils.getPersonList(this.commitToStore)
         // var personCollection=[{"createdOn":{"seconds":1551755372,"nanoseconds":440000000},"expenses":{"JUKFvvgzQ19QX6xFCj9P":{"cost":10,"date":{"nanoseconds":449000000,"seconds":1551761945},"id":"JUKFvvgzQ19QX6xFCj9P"},"kCdK1o1Ap4eu5o0c14M8":{"cost":50,"date":{"seconds":1551878161,"nanoseconds":84000000},"id":"kCdK1o1Ap4eu5o0c14M8","name":"11"}},"name":"Hari","paid":false,"photo":null,"expand":false,"toPay":60,"id":"c1EWlrtEXQURuYc6XNvi","modified":false,"modify":{"name":null,"cost":0,"toPay":0,"mode":null}},{"createdOn":{"seconds":1551755412,"nanoseconds":699000000},"expenses":{"JUKFvvgzQ19QX6xFCj9P":{"cost":45,"date":{"nanoseconds":452000000,"seconds":1551761945},"id":"JUKFvvgzQ19QX6xFCj9P"},"kCdK1o1Ap4eu5o0c14M8":{"cost":50,"date":{"seconds":1551878161,"nanoseconds":85000000},"id":"kCdK1o1Ap4eu5o0c14M8","name":"11"}},"name":"Hari 2","paid":false,"photo":null,"expand":false,"toPay":95,"id":"XO1WQUh6mE3ALI9bhfYF","modified":false,"modify":{"name":null,"cost":0,"toPay":0,"mode":null}},{"createdOn":{"seconds":1551755508,"nanoseconds":213000000},"expenses":{"JUKFvvgzQ19QX6xFCj9P":{"cost":45,"date":{"seconds":1551761945,"nanoseconds":453000000},"id":"JUKFvvgzQ19QX6xFCj9P"}},"name":"Hari 3","paid":false,"photo":null,"expand":false,"toPay":45,"id":"Hk8MhHaVI4mmgZCFzNOc","modified":false,"modify":{"name":null,"cost":0,"toPay":0,"mode":null}},{"createdOn":{"seconds":1551755511,"nanoseconds":490000000},"expenses":{},"name":"Hari 4","paid":true,"photo":null,"expand":false,"toPay":0,"id":"Dfl2KF4MPMX3tkRGodvc","modified":false,"modify":{"name":null,"cost":0,"toPay":0,"mode":null}}]
         // this.commitToStore(personCollection);
       },
@@ -141,37 +122,20 @@
           };
           var _this = this
           if (this.editor.id === 'new') {
-            fb.personCollection
-              .add(person)
-              .then(ref => {
-                _this.personAdded(ref.id);
-              })
-              .catch(err => {
-                _this.closeEditor();
-                _this.showError("Something Went Wrong");
-              });
+            serverUtils.addPerson(person,this.personAdded,this.errorHandler)
           } else {
-            fb.personCollection
-              .doc(this.editor.id)
-              .set(person, {
-                merge: true
-              })
-              .then(function() {
-                console.log('hhh')
-                _this.personAdded(_this.editor.id);
-              })
-              .catch(function(error) {
-                _this.closeEditor();
-                _this.showError("Something Went Wrong");
-              });
+            serverUtils.editPerson(this.editor.id,person,this.personAdded,this.errorHandler)
           }
           console.log(person)
         } else {
           this.showError("Name Cannot be Empty")
         }
       },
+      errorHandler(err){
+        this.closeEditor();
+        this.showError("Something Went Wrong");
+      },
       personAdded(id) {
-        console.log("aaaaaa",id);
         var _this = this;
         if (this.editor.photo) {
           fb.photos

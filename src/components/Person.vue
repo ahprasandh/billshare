@@ -17,7 +17,7 @@
               <span class="iconHolder">
                 <i title="Edit Person" class="bs-edit" @click.stop="$parent.editPerson(person,photos[person.id])"></i>
                 <i title="Record Payment" v-bind:class="{pPaid:paid}" class="bs-wallet" @click.stop="paid=!paid"></i>
-                <i title="Move to trash" class="bs-delete" @click="deletePeople(person.id)"></i>
+                <i title="Move to trash" class="bs-delete" @click="deletePerson(person.id)"></i>
               </span>
             </span>
           </div>
@@ -42,7 +42,7 @@
             <div class="peExCRight" @click.stop="openExpense(expense.id)" v-bind:class="{pPaid:paid && !modified, 'modAdd': modified && person.modify.id==expense.id &&  modifyMode === 'add','modSub': modified && person.modify.id==expense.id && modifyMode !== 'add'}">
               <div v-text="expense.name">
               </div>
-              <div class="m45">
+              <div class="m20">
                 <span class="currency" v-text="settings.currency"></span>
                 <span v-text="modified && person.modify.id==expense.id?(modifyMode === 'add'?Math.ceil(expense.cost+modifyCost):Math.ceil(expense.cost-modifyCost)):Math.ceil(expense.cost)"></span>
                 <span v-if="modified && person.modify.id==expense.id" v-text="'( '+Math.ceil(expense.cost) +' '+ (modifyMode === 'add' ? '+' : '-') +' ' +Math.ceil(modifyCost)+' )'"></span>
@@ -53,7 +53,7 @@
             <div class="peExCRight" @click.stop="openExpense('new')" v-bind:class="{'modAdd':true}">
               <div v-text="person.modify.name">
               </div>
-              <div class="m45">
+              <div class="m20">
                 <span class="currency" v-text="settings.currency"></span>
                 <span v-text="Math.ceil(modifyCost)"></span>
               </div>
@@ -63,7 +63,7 @@
             <div class="peExCRight modAdd" @click.stop="openExpense(person.modify.id)">
               <div v-text="modifyName">
               </div>
-              <div class="m45">
+              <div class="m20">
                 <span class="currency" v-text="settings.currency"></span>
                 <span v-text="Math.ceil(modifyCost)"></span>
               </div>
@@ -104,7 +104,7 @@
   }
   
   .perW.expanded {
-    max-height: 30em;
+    max-height: 3000em;
     transition: max-height 0.25s ease-in;
   }
   
@@ -175,7 +175,7 @@
   }
   
   .perDelIi .bs-more:hover {
-    color: #5e2fb4!important;
+    color: var(--hard)!important;
   }
   
   .perDelIi .bs-edit:hover {
@@ -268,7 +268,7 @@
     height: 100%;
     width: calc(100% - 2.4em);
     overflow: hidden;
-    max-height: 15em;
+    max-height: 2500em;
     visibility: hidden;
   }
   
@@ -291,10 +291,19 @@
   .peExCRight {
     cursor: pointer;
     float: right;
+    display: flex;
+    max-width: 75%;
+  }
+
+  .peExCRight div{
+    padding-top: 0.2em;
   }
   
   .peExCRight div:first-child {
     float: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
   
   .pTot {
@@ -323,6 +332,10 @@
   .pPaid *:not(i) {
     text-decoration: line-through;
     color: #ccc!important;
+  }
+
+  .m20{
+    margin-left: 1.2em;
   }
 </style>
 
@@ -389,17 +402,11 @@
           query: query
         });
       },
-  
       deletePeople(id) {
-        fb.personCollection
-          .doc(id)
-          .delete()
-          .then(function() {
-            alert("Person successfully deleted!");
-          })
-          .catch(function(error) {
-            console.error("Error removing Person: ", error);
-          });
+        alert("Feature under implementation") 
+      },
+      printR(r){
+        console.log(r)
       }
     }
   };

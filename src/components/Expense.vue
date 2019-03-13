@@ -16,9 +16,9 @@
         </div>
         <div class="eWHeadRight" v-if="mode === 'view'" v-bind:class="{ expanded: expand }">
           <span class="costHo" v-if="!expand">
-              <div v-text="settings.currency"/>
-              <span v-text="this.cost" />
-          </span>
+                                                    <div v-text="settings.currency"/>
+                                                    <span v-text="this.cost" />
+                                                </span>
           <span v-text="this.date" />
         </div>
         <div class="eWHeadRight" v-else-if="expand">
@@ -85,7 +85,7 @@
             <div class="exPeCRight">
               <div>
                 <!-- <img v-if="photos[person.id]" class="pPic" :src="photos[person.id]" />
-                <img v-else class="pPic" src="../assets/guest.svg" /> -->
+                                                      <img v-else class="pPic" src="../assets/guest.svg" /> -->
                 <div class="pMt">
                   <span v-if="photos[person.id]" v-bind:style="{background:'url('+photos[person.id]+') no-repeat center'}" />
                   <span v-else-if="settings.show.guestImage" />
@@ -125,10 +125,11 @@
     mapState
   } from "vuex";
   import fb from "@/firebaseConfig";
+  import serverUtils from "@/serverUtils"
   export default {
     name: "ExpenseEditor",
     computed: {
-      ...mapState(["isAdmin", "personCollection", "settings" ,"photos"]),
+      ...mapState(["isAdmin", "personCollection", "settings", "photos"]),
       checkTemp: function() {
         return this.expense && this.expense.id.indexOf("TEMP") === 0 && this.mode == "view";
       }
@@ -193,7 +194,6 @@
               query
             });
           }
-          // this.expand = false
         }
       },
       editClick(event) {
@@ -202,7 +202,6 @@
         if (this.expand) {
           event.stopPropagation();
         }
-        // this.$parent.expandFromChild(this.expense.id);
       },
       noAct() {
   
@@ -229,8 +228,7 @@
               this.availablePersons.push({
                 id: person.id,
                 name: person.name,
-                cost: 0,
-                photo: person.photo
+                cost: 0
               });
             }
             if (this.expense.id && this.expense.id !== "new" && this.mode !== "edit") {
@@ -260,53 +258,57 @@
             cost: this.cost,
             date: this.date ? new Date(this.date) : null,
             persons: this.persons,
-            id: "TEMP"
+            id: this.expense.id
           };
-          // fb.expenseCollection
-          //   .add(expense)
-          //   .then(ref => {
-          //     expense.id = ref.id;
-          //     for (var id in expense.persons) {
-          //       for (var i = 0; i < this.personCollection.length; i++) {
-          //         if (id === this.personCollection[i].id) {
-          //           this.personCollection[i].expenses[expense.id] = {
-          //             cost: expense.persons[id].cost,
-          //             id: expense.id,
-          //             date: new Date(),
-          //             name: expense.name
-          //           };
-          //           var toPay = 0;
-          //           for (var bill in this.personCollection[i].expenses) {
-          //             toPay += this.personCollection[i].expenses[bill].cost;
-          //           }
-          //           fb.personCollection
-          //             .doc(id)
-          //             .set({
-          //               expenses: this.personCollection[i].expenses,
-          //               toPay: toPay,
-          //               paid: false
-          //             }, {
-          //               merge: true
-          //             })
-          //             .then(function() {
-          //               console.log("Person successfully updated!");
-          //             })
-          //             .catch(function(error) {
-          //               console.error("Error writing document: ", error);
-          //             });
-          //         }
-          //       }
-          //       this.$parent.expenseAdded();
-          //     }
-          //   })
-          //   .catch(err => {
-          //     console.log(err);
-          //   });
+          var initialExpensePersons = JSON.parse(JSON.stringify(this.expense.persons))
+          if (this.mode === "add") {
+            serverUtils.addExpense(expense, initialExpensePersons, this.updatePersons, this.printR)
+          } else if (this.mode === "edit") {
+            serverUtils.editExpense(this.expense.id,expense, initialExpensePersons, this.updatePersons, this.printR)
+          }
         } else if (!this.costValidate) {
           this.showError("Billed Person Amount Invalid");
         } else {
           this.showError("Invalid Bill");
         }
+      },
+      updatePersons(expense, initPersons) {
+        let selectedPersons = JSON.parse(JSON.stringify(expense.persons));
+        let personIteration = JSON.parse(JSON.stringify(this.personCollection));
+        for (let i = 0; i < personIteration.length; i++) {
+          let person = personIteration[i];
+          let updatePerson = {}
+          let needUpdate = false;
+          if (selectedPersons[person.id]) {
+            person.expenses[expense.id] = {
+              id: expense.id,
+              name: expense.name,
+              cost: selectedPersons[person.id].cost,
+              date: expense.date,
+            }
+            needUpdate = true;
+          } else if (initPersons[person.id]) {
+            delete person.expenses[expense.id]
+            needUpdate = true;
+          }
+          if (needUpdate) {
+            var totalPayRequired = 0;
+            for (var bill in person.expenses) {
+              totalPayRequired += person.expenses[bill].cost;
+            }
+            updatePerson = {
+              expenses: person.expenses,
+              payment: {
+                balPayRequired: totalPayRequired - person.payment.paid,
+                totalPayRequired: totalPayRequired
+              },
+              paid: (totalPayRequired - person.payment.paid) === 0
+            }
+            serverUtils.editPerson(person.id,updatePerson,this.printR,this.printR)
+          }
+        }
+        this.$parent.expenseAdded(expense.id);
+  
       },
       previewExpense() {
         if (this.name && this.name.trim().length > 0 && this.cost > 0 && this.costValidate) {
@@ -359,6 +361,7 @@
             }
   
           } else if (this.expense.persons[id]) {
+            console.log(this.personCollection[i], this.expense.persons)
             this.personCollection[i].modify = {
               id: this.expense.id,
               name: this.expense.name,
@@ -393,7 +396,6 @@
                 id: person.id,
                 name: person.name,
                 cost: person.cost,
-                photo: person.photo,
                 omitSplit: person.cost > 0
               });
             }
@@ -442,8 +444,8 @@
           this.recalculateSplit();
         }
       },
-      costReset(value) {
-        this.split.amount = value;
+      printR(r) {
+        console.log(r)
       }
     },
     watch: {
@@ -479,7 +481,7 @@
   }
   
   .neW.expanded {
-    max-height: 45em;
+    max-height: 4500em;
     transition: max-height 0.25s ease-in;
   }
   
@@ -625,7 +627,7 @@
     height: 100%;
     width: calc(100% - 2.4em);
     overflow: hidden;
-    max-height: 30vh;
+    max-height: 3000vh;
     visibility: hidden;
   }
   
@@ -766,7 +768,7 @@
     font-size: 1.2em;
     margin: 0.3em 0;
   }
-
+  
   .exPcP {
     height: 3em;
     width: calc(100% - 1.8em);
@@ -778,8 +780,8 @@
     margin: 0.6em 1em;
     width: calc(100% - 2em);
   }
-
-  .exPcPW .pMt{
+  
+  .exPcPW .pMt {
     margin-top: -0.1em!important;
   }
   
@@ -840,8 +842,8 @@
     box-shadow: 0em 0.06em 0.3em 0.12em rgba(103, 58, 183, 0.5);
     font-weight: var(--fontbold)
   }
-
-  .butPB i{
+  
+  .butPB i {
     font-weight: var(--fontbold)
   }
   

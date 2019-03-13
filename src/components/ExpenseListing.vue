@@ -51,6 +51,7 @@
   import Expense from "@/components/Expense.vue";
   import router from "@/router";
   import fb from "@/firebaseConfig";
+  import serverUtils from "@/serverUtils"
   import {
     setTimeout
   } from 'timers';
@@ -72,22 +73,13 @@
     },
     methods: {
       initExpenses() {
-        fb.expenseCollection
-          .orderBy("createdOn", "desc")
-          .onSnapshot(querySnapshot => {
-            // console.log(querySnapshot)
-            var expenseCollection = [];
-            querySnapshot.forEach(doc => {
-              let expense = doc.data();
-              expense.id = doc.id;
-              expense.expand = false
-              expenseCollection.push(expense);
-            });
-            this.expenseCollection = expenseCollection;
-          });
+        serverUtils.getExpenseList(this.setExpense);
         // this.expenseCollection=[{"cost":100,"createdOn":{"seconds":1551878159,"nanoseconds":305000000},"date":null,"id":"kCdK1o1Ap4eu5o0c14M8","name":"11","persons":{"XO1WQUh6mE3ALI9bhfYF":{"cost":50,"id":"XO1WQUh6mE3ALI9bhfYF","name":"Hari 2","omitSplit":false},"c1EWlrtEXQURuYc6XNvi":{"cost":50,"id":"c1EWlrtEXQURuYc6XNvi","name":"Hari","omitSplit":false}},"expand":false},{"cost":100,"createdOn":{"seconds":1551761944,"nanoseconds":567000000},"date":null,"name":"B1","persons":{"Hk8MhHaVI4mmgZCFzNOc":{"cost":45,"id":"Hk8MhHaVI4mmgZCFzNOc","name":"Hari 3","omitSplit":false},"XO1WQUh6mE3ALI9bhfYF":{"cost":45,"id":"XO1WQUh6mE3ALI9bhfYF","name":"Hari 2","omitSplit":false},"c1EWlrtEXQURuYc6XNvi":{"cost":10,"id":"c1EWlrtEXQURuYc6XNvi","name":"Hari","omitSplit":true}},"id":"JUKFvvgzQ19QX6xFCj9P","expand":false}]
         // this.$store.commit("setexpenseCollection", this.expenseCollection);
         // this.$parent.hideLoading();
+      },
+      setExpense(expenseCollection){
+        this.expenseCollection = expenseCollection;
       },
       expandExpense() {
         if (this.expenseCollection && this.expenseCollection[0].id !== "new") {
@@ -125,8 +117,13 @@
           this.pushRouter("new");
         }
       },
-      expenseAdded() {
-        this.$parent.init();
+      expenseAdded(id) {
+        this.pushRouter(id);
+        this.initExpenses();
+        serverUtils.getPersonList(this.setPersonInStore)
+      },
+      setPersonInStore(personCollection){
+        this.$store.commit("setPersonCollection", personCollection);
       },
       expandFromChild(id) {
         if (this.expenseCollection[0].id === "new") {
