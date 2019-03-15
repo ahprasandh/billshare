@@ -1,5 +1,5 @@
 <template>
-  <div class="pSettings">
+  <div v-if="settings.currency" class="pSettings">
     <div class="pSettingsC">
       <div class="pSettingsDiv">
         <div class="setT">Help Text</div>

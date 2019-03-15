@@ -95,7 +95,6 @@
     background: #fff;
     -webkit-box-shadow: 0.12em 0.06em 0.3em -0.24em rgba(0, 0, 0, 0.75);
     box-shadow: 0.12em 0.06em 0.3em -0.24em rgba(0, 0, 0, 0.75);
-    font-size: 20px;
   }
   
   .perW {
@@ -109,7 +108,7 @@
   }
   
   .perHead {
-    font-size: 1.2em;
+    font-size: var(--titleSize);
     cursor: pointer;
     height: 2em;
   }
@@ -125,7 +124,6 @@
   .perHeadW div {
     float: left;
     margin:0em 0 0 0.5em;
-    padding-top: 0.1em;
   }
   
 
@@ -279,11 +277,11 @@
   .perExW {
     margin: 0.6em;
     overflow: auto;
+    font-size: var(--normalSize);
   }
   
   .perEx {
     width: 100%;
-    font-size: 1.2em;
     color: #6f6f6f;
     display: inline-block;
   }
@@ -402,7 +400,7 @@
           query: query
         });
       },
-      deletePeople(id) {
+      deletePerson(id) {
         alert("Feature under implementation") 
       },
       printR(r){

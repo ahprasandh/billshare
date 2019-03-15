@@ -14,7 +14,7 @@
   .ewT {
     padding: 10px;
     height: 20px;
-    font-size: 25px;
+    font-size: var(--headingSize)
   }
   
   .ewT span {

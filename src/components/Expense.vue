@@ -9,7 +9,7 @@
           <input @click.stop="noAct" v-if="mode !== 'view'" type="text" v-model="name" placeholder="Enter Name" />
           <span :id="'expenseName_' + expense.id" v-else v-text="this.name" />
           <i title="Edit Expense" v-if="mode==='view' && isAdmin" @click="editClick($event)" class="bs-edit"></i>
-          <i title="Move to Trash" v-if="mode==='view' && isAdmin" @click.stop="mode='edit';expand=true" class="bs-delete"></i>
+          <i title="Move to Trash" v-if="mode==='view' && isAdmin" @click.stop="deleteExpense" class="bs-delete"></i>
           <div v-if="checkTemp" class="neHt">
             <span class="bs-save"> Not Saved</span>
           </div>
@@ -256,7 +256,7 @@
             createdOn: new Date(),
             name: this.name,
             cost: this.cost,
-            date: this.date ? new Date(this.date) : null,
+            date: this.date? this.date : null,
             persons: this.persons,
             id: this.expense.id
           };
@@ -309,6 +309,9 @@
         }
         this.$parent.expenseAdded(expense.id);
   
+      },
+      deleteExpense(){
+        alert('Implementing Feature. Come Back Later')
       },
       previewExpense() {
         if (this.name && this.name.trim().length > 0 && this.cost > 0 && this.costValidate) {
@@ -502,15 +505,14 @@
     overflow: auto;
     cursor: pointer;
     margin: 0.6em 1.2em;
-    padding: 0.6em 1.2em;
+    padding: 0.3em 1.2em;
     color: #2c3e50;
-    font-size: 1.2em;
+    font-size: var(--titleSize);
   }
   
   .eWHead i {
     opacity: 0;
     margin: -0.2em 0 0 1.2em;
-    font-size: 1.3em;
   }
   
   .eWHead:hover.eWHead i,
@@ -534,7 +536,6 @@
   }
   
   .eWHead input {
-    font-size: 1.2em;
     background: #e3e2e4;
     border: 0.06em solid #c7c6c6;
   }
@@ -545,7 +546,6 @@
   }
   
   .eWHead input[type=date]::-webkit-calendar-picker-indicator {
-    font-size: 18px;
     padding: 0;
     margin: 0
   }
@@ -598,7 +598,6 @@
   .currency {
     color: #6f6c6c;
     padding-right: 0.3em!important;
-    font-size: 0.9em;
   }
   
   .neHt {
@@ -612,7 +611,6 @@
     margin: 0.25em auto;
     border-radius: 0.24em;
     padding: 0.3em;
-    font-size: 0.72em;
     color: #868585;
     font-family: Arial;
   }
@@ -629,6 +627,7 @@
     overflow: hidden;
     max-height: 3000vh;
     visibility: hidden;
+    font-size: var(--normalSize);
   }
   
   .exPc.expanded {
@@ -660,7 +659,6 @@
   
   .exPeC {
     width: 100%;
-    font-size: 1.2em;
     color: #6f6f6f;
     display: inline-block;
     margin-top: 1.6em;
@@ -715,7 +713,6 @@
     padding: 0em 1vw;
     text-align: center;
     color: #5d5d5d;
-    font-size: 1.5em;
     width: calc(100% - 2vw);
     transition: width .1s ease-in-out;
     display: block;
@@ -728,7 +725,6 @@
   }
   
   .exPcL .searchI {
-    font-size: 20px;
     width: 0%;
     transition: width .1s ease-in-out;
     margin-top: 50em;
@@ -741,7 +737,6 @@
   }
   
   .exPcL .bs-search {
-    font-size: 25px;
     cursor: pointer;
     top: 0.2em;
     right: 2em;
@@ -765,7 +760,6 @@
   
   .exPcPW * {
     float: left;
-    font-size: 1.2em;
     margin: 0.3em 0;
   }
   
@@ -790,7 +784,6 @@
   }
   
   .exPcPW .currency {
-    font-size: 1.3em;
     padding-top: 0.7em;
   }
   
@@ -800,7 +793,6 @@
   
   .exPcPW input[type=number] {
     padding-top: 0.4em;
-    font-size: 1.2em;
   }
   
   .exPcPW .but {
@@ -837,7 +829,6 @@
     text-transform: uppercase;
     right: 1.2em;
     bottom: 1.2em;
-    font-size: 0.72em!important;
     cursor: pointer;
     box-shadow: 0em 0.06em 0.3em 0.12em rgba(103, 58, 183, 0.5);
     font-weight: var(--fontbold)
@@ -870,7 +861,6 @@
   
   .exTot div {
     float: right;
-    font-size: 1.2em;
     margin: 0.6em;
   }
   

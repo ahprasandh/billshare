@@ -3,15 +3,15 @@ import "firebase/auth";
 import Vue from "vue";
 import Router from "vue-router";
 
-import Home from "@/views/Home";
+import Shared from "@/views/Shared";
 import Login from "@/views/Login";
 import SignUp from "@/views/SignUp";
+import Dashboard from "@/views/Dashboard";
 
 Vue.use(Router);
 
 const router = new Router({
-  routes: [
-    {
+  routes: [{
       path: "*",
       redirect: "/login"
     },
@@ -30,9 +30,17 @@ const router = new Router({
       component: SignUp
     },
     {
-      path: "/home",
-      name: "Home",
-      component: Home,
+      path: "/dashboard",
+      name: "Dashboard",
+      component: Dashboard,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/shared",
+      name: "SharedView",
+      component: Shared,
       meta: {
         requiresAuth: true
       }
@@ -45,7 +53,7 @@ router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
   if (requiresAuth && !currentUser) next("login");
-  else if (!requiresAuth && currentUser) next("home");
+  else if (!requiresAuth && currentUser) next("dashboard");
   else next();
 });
 
