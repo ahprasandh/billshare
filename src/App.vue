@@ -13,9 +13,9 @@ import serverUtils from "@/serverUtils";
 import FullLoading from "@/components/FullLoading.vue";
 export default {
   name: "App",
-  components: { MenuBar ,FullLoading},
+  components: { MenuBar, FullLoading },
   computed: {
-    ...mapState(["currentUser","settings"]),
+    ...mapState(["currentUser", "settings"]),
     getLoadingMessage() {
       return "Hi " + this.currentUser.displayName + ", Loading your App";
     }
@@ -155,7 +155,7 @@ video {
   margin: 0;
   padding: 0;
   border: 0;
-  /* font: inherit; */
+  font: inherit;
   vertical-align: baseline;
 }
 
@@ -243,42 +243,36 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 0px;
-  /* remove scrollbar space */
+  width: 1px;
+  height: 10px;
   background: transparent;
-  /* optional: just make scrollbar invisible */
 }
-
-/* optional: show position indicator in red */
 
 ::-webkit-scrollbar-thumb {
   background: var(--hard);
+  height: 10px;
 }
 
-.pMt {
-  padding: 0 !important;
-  margin: -0.6em 0.5em !important;
-  height: 2em;
+#app {
+  height: 100%;
+  width: 100%;
+  font-family: var(--fontfamily);
+  color: var(--textcolor);
+  overflow: hidden;
 }
 
-.pMt span {
-  background: url(/billshare/img/guest.svg) no-repeat center;
-  color: #fff;
-  border-radius: 5em;
-  background-size: cover !important;
-  height: 30px;
-  min-width: 30px;
-  display: block;
+.mC {
+  height: 95vh;
+  width: 100vw;
 }
 
 .pName {
-  width: 25%;
-  overflow: hidden;
+  width: fit-content;
+  font-size: var(--normalSize);
   text-overflow: ellipsis;
-  padding: 0.3em 0.3em;
-  margin: 0.3em 0;
-  text-align: center;
-  font-size: 1.5em;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 15vw;
 }
 
 input {
@@ -432,6 +426,7 @@ input:disabled {
   --headingSize: 20px;
   --titleSize: 17px;
   --normalSize: 15px;
+  --smallSize: 12px;
   --textcolor: #2c3e50;
   --fontfamily: "Lato", sans-serif;
   --fontbold: 600;
@@ -472,4 +467,3 @@ input:disabled {
   --hard: #37474f;
 }
 </style>
-

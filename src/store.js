@@ -9,27 +9,27 @@ const store = new Vuex.Store({
   state: {
     currentUser: null,
     isAdmin: false,
-    personCollection:[],
-    expenseCollection:[],
-    settings:{},
-    photos:{}
+    personCollection: [],
+    expenseCollection: [],
+    settings: {},
+    photos: {}
   },
   mutations: {
     setCurrentUser(state, user) {
       state.currentUser = user;
       state.isAdmin = user && user.uid === constants.adminUid;
     },
-    setPersonCollection(state,personCollection){
-      state.personCollection=personCollection;
+    setPersonCollection(state, personCollection) {
+      state.personCollection = personCollection;
     },
-    setexpenseCollection(state,expenseCollection){
-      state.expenseCollection=expenseCollection;
+    setexpenseCollection(state, expenseCollection) {
+      state.expenseCollection = expenseCollection;
     },
-    saveSettings(state,settings){
-      state.settings=settings
+    saveSettings(state, settings) {
+      state.settings = settings;
     },
-    savePhotos(state,photos){
-      state.photos=photos
+    savePhotos(state, photos) {
+      state.photos = photos;
     }
   },
   actions: {}

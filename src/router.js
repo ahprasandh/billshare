@@ -3,15 +3,18 @@ import "firebase/auth";
 import Vue from "vue";
 import Router from "vue-router";
 
-import Shared from "@/views/Shared";
+// import Shared from "@/views/Shared";
 import Login from "@/views/Login";
 import SignUp from "@/views/SignUp";
-import Dashboard from "@/views/Dashboard";
+// import Dashboard from "@/views/Dashboard";
+import Expenses from "@/views/Expenses";
+// import ComingSoon from "@/views/ComingSoon";
 
 Vue.use(Router);
 
 const router = new Router({
-  routes: [{
+  routes: [
+    {
       path: "*",
       redirect: "/login"
     },
@@ -32,20 +35,29 @@ const router = new Router({
     {
       path: "/dashboard",
       name: "Dashboard",
-      component: Dashboard,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: "/shared",
-      name: "SharedView",
-      component: Shared,
+      component: Expenses,
       meta: {
         requiresAuth: true
       }
     }
-  ]
+    // {
+    //   path: "/expenses",
+    //   name: "Expenses",
+    //   component: Expenses,
+    //   meta: {
+    //     requiresAuth: true
+    //   }
+    // },
+    // {
+    //   path: "/todos",
+    //   name: "Todos",
+    //   component: ComingSoon,
+    //   meta: {
+    //     requiresAuth: true
+    //   }
+    // }
+  ],
+  linkActiveClass: "lAct"
 });
 
 router.beforeEach((to, from, next) => {

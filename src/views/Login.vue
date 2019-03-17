@@ -2,19 +2,34 @@
   <div class="logC" @mousemove="mouseOver($event)">
     <div class="logW">
       <div class="logLogo">
-  
         <div class="logTit">
           <div>Expense Share</div>
         </div>
         <div class="logLogoW">
           <div id="logLogoDiv" class="logLogoDiv">
-            <img src="../assets/logo.svg" v-bind:style="{ transform:'perspective(100px) rotateX('+xTransform+'deg) rotateY('+yTransform+'deg) scale3d('+scale+','+scale+','+scale+')' }" />
+            <img
+              src="../assets/logo.svg"
+              v-bind:style="{
+                transform:
+                  'perspective(100px) rotateX(' +
+                  xTransform +
+                  'deg) rotateY(' +
+                  yTransform +
+                  'deg) scale3d(' +
+                  scale +
+                  ',' +
+                  scale +
+                  ',' +
+                  scale +
+                  ')'
+              }"
+            />
           </div>
         </div>
       </div>
       <div class="logFW">
         <FullLoading message="Signing you in..." v-show="loading" />
-        <div class="logFC" @keypress.enter="login();">
+        <div class="logFC" @keypress.enter="login()">
           <span class="logFT">Login</span>
           <div class="logFIC">
             <div class="logFIG">
@@ -23,7 +38,7 @@
             </div>
             <div class="logFIG">
               <label class="logFILab">Password</label>
-              <input class="logFI" type="password" v-model="password">
+              <input class="logFI" type="password" v-model="password" />
             </div>
           </div>
           <div class="logFB" @click="login">
@@ -213,6 +228,7 @@
 
 <script>
 import FullLoading from "@/components/FullLoading.vue";
+import serverUtils from "@/serverUtils";
 export default {
   name: "login",
   components: {
@@ -257,16 +273,16 @@ export default {
     },
     loginSuccessCallBack(user) {
       this.$store.commit("setCurrentUser", user);
-      this.$router.replace("preloader");
+      this.$router.replace("dashboard");
     },
-    loginErrorCallBack(err) {
+    loginErrorCallBack() {
       this.loading = false;
       this.error = "Email & password do not match";
     },
     loginAsGuest: function() {
       this.loginToFB("guest@domain.com", "guest@123", this.createGuest);
     },
-    createGuest() {
+    createGuest(err) {
       serverUtils.createGuest(this.loginAsGuest, () => {
         this.error = err.message;
       });

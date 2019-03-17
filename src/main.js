@@ -3,11 +3,11 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import fb from "./firebaseConfig";
-import FullLoading from "@/components/FullLoading.vue"
+import FullLoading from "@/components/FullLoading.vue";
 Vue.config.productionTip = false;
 let app = "";
 fb.auth.onAuthStateChanged(() => {
-  console.log('hhh')
+  console.log("hhh");
   if (!app) {
     app = new Vue({
       router,
@@ -16,4 +16,4 @@ fb.auth.onAuthStateChanged(() => {
     }).$mount("#app");
   }
 });
-new Vue({render: h => h(FullLoading)}).$mount("#initLoading");
+new Vue({ render: h => h(FullLoading) }).$mount("#initLoading");

@@ -3,109 +3,115 @@
     <div class="pSettingsC">
       <div class="pSettingsDiv">
         <div class="setT">Help Text</div>
-        <div class="iW"> <label class="switch"> <input
-              type="checkbox"
-              v-model="settings.show.help"
-              class="icB"
-            > <span class="slider round"></span> </label></div>
+        <div class="iW">
+          <label class="switch">
+            <input type="checkbox" v-model="settings.show.help" class="icB" />
+            <span class="slider round"></span>
+          </label>
+        </div>
       </div>
       <div class="pSettingsDiv">
         <div class="setT">Theme</div>
-        <div
-          id="themeLister"
-          class="iW"
-        >
-          <label class="container">Pink
+        <div id="themeLister" class="iW">
+          <label class="container"
+            >Pink
             <input
               type="radio"
               checked="checked"
               name="theme"
               v-model="settings.theme"
               value="themepink"
-            >
+            />
             <span class="checkmark"></span>
           </label>
-          <label class="container">Red
+          <label class="container"
+            >Red
             <input
               type="radio"
               name="theme"
               v-model="settings.theme"
               value="themered"
-            >
+            />
             <span class="checkmark"></span>
           </label>
-          <label class="container">Blue
+          <label class="container"
+            >Blue
             <input
               type="radio"
               name="theme"
               v-model="settings.theme"
               value="themeblue"
-            >
+            />
             <span class="checkmark"></span>
           </label>
-          <label class="container">Purple
+          <label class="container"
+            >Purple
             <input
               type="radio"
               name="theme"
               v-model="settings.theme"
               value="themepurple"
-            >
+            />
             <span class="checkmark"></span>
           </label>
-          <label class="container">Light Blue
+          <label class="container"
+            >Light Blue
             <input
               type="radio"
               name="theme"
               v-model="settings.theme"
               value="themelightblue"
-            >
+            />
             <span class="checkmark"></span>
           </label>
-          <label class="container">Green
+          <label class="container"
+            >Green
             <input
               type="radio"
               name="theme"
               v-model="settings.theme"
               value="themegreen"
-            >
+            />
             <span class="checkmark"></span>
           </label>
-          <label class="container">Dark
+          <label class="container"
+            >Dark
             <input
               type="radio"
               name="theme"
               v-model="settings.theme"
               value="themedark"
-            >
+            />
             <span class="checkmark"></span>
           </label>
         </div>
       </div>
       <div class="pSettingsDiv">
         <div class="setT">Cursive Font</div>
-        <div class="iW"> <label class="switch"> <input
-              type="checkbox"
-              class="icB"
-              v-model="settings.cursiveFont"
-            > <span class="slider round"></span> </label></div>
+        <div class="iW">
+          <label class="switch">
+            <input type="checkbox" class="icB" v-model="settings.cursiveFont" />
+            <span class="slider round"></span>
+          </label>
+        </div>
       </div>
       <div class="pSettingsDiv">
         <div class="setT">Guest Image</div>
-        <div class="iW"> <label class="switch"> <input
+        <div class="iW">
+          <label class="switch">
+            <input
               type="checkbox"
               class="icB"
               v-model="settings.show.guestImage"
-            > <span class="slider round"></span> </label></div>
+            />
+            <span class="slider round"></span>
+          </label>
+        </div>
       </div>
-      <div
-        v-if="isAdmin"
-        class="pSettingsS"
-      >Save</div>
-      <div
-        v-if="isAdmin"
-        class="apButW"
-        @click.stop="save"
-      ><span class="apBut">Save</span></div>
+      <div v-if="isAdmin" class="pSettingsS">Save</div>
+      <div v-if="isAdmin" class="apButW" @click.stop="save">
+        <span class="apBut">Save</span>
+      </div>
     </div>
   </div>
 </template>
@@ -131,7 +137,7 @@ export default {
 .pN .pSettings {
   position: absolute;
   top: 1.4em;
-  left: 0;
+  right: 0;
   background: white;
   -webkit-box-shadow: 0 0 1em 1em rgba(0, 0, 0, 0.1);
   box-shadow: 0 0 0.3em 0.2em rgba(0, 0, 0, 0.5);
@@ -311,5 +317,3 @@ input:checked + .slider:before {
   margin: 1em;
 }
 </style>
-
-
