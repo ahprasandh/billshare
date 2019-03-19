@@ -6,9 +6,7 @@ import Router from "vue-router";
 // import Shared from "@/views/Shared";
 import Login from "@/views/Login";
 import SignUp from "@/views/SignUp";
-// import Dashboard from "@/views/Dashboard";
 import Expenses from "@/views/Expenses";
-// import ComingSoon from "@/views/ComingSoon";
 
 Vue.use(Router);
 

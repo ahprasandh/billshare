@@ -272,7 +272,7 @@ export default {
       );
     },
     loginSuccessCallBack(user) {
-      this.$store.commit("setCurrentUser", user);
+      serverUtils.getSettings(this.$parent.initSettings);
       this.$router.replace("dashboard");
     },
     loginErrorCallBack() {

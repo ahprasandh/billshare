@@ -7,7 +7,6 @@ import FullLoading from "@/components/FullLoading.vue";
 Vue.config.productionTip = false;
 let app = "";
 fb.auth.onAuthStateChanged(() => {
-  console.log("hhh");
   if (!app) {
     app = new Vue({
       router,

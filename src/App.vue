@@ -1,6 +1,6 @@
 <template>
   <div id="app" v-bind:class="[settings.theme]">
-    <MenuBar v-if="currentUser" />
+    <MenuBar v-if="currentUser && currentUser.displayName" />
     <router-view v-if="!show.loading" />
     <FullLoading v-else :message="getLoadingMessage" />
   </div>
@@ -17,7 +17,7 @@ export default {
   computed: {
     ...mapState(["currentUser", "settings"]),
     getLoadingMessage() {
-      return "Hi " + this.currentUser.displayName + ", Loading your App";
+      return "Hi " + (this.currentUser && this.currentUser.displayName!==null?this.currentUser.displayName:'') + ", Loading your App";
     }
   },
   data() {
@@ -29,7 +29,11 @@ export default {
   methods: {
     init() {
       this.date = new Date();
-      serverUtils.getSettings(this.initSettings);
+      if(this.currentUser && this.currentUser.displayName){
+        serverUtils.getSettings(this.initSettings);
+      }else{
+        this.show.loading=false;
+      }
     },
     initSettings(data) {
       var settings = null;

@@ -308,14 +308,12 @@ export default {
   visibility: visible;
 }
 
-.bs-edit {
+.editdiv .bs-edit {
   height: unset;
   align-self: center;
 }
-.bs-edit:before {
+.editdiv .bs-edit:before {
   color: #fff;
-  font-size: 30px;
-  font-weight: 100;
 }
 
 .avatar-preview {
